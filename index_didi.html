@@ -1,0 +1,4181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Monisha 🌸</title>
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+   
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary:   #ff5fa2;
+  --secondary: #ffd6ea;
+  --accent:    #fff3f8;
+  --dark1:     #12000d;
+  --dark2:     #240018;
+  --dark3:     #3d0030;
+  --dark4:     #5c1145;
+  --glow:      rgba(255,95,162,.5);
+  --font-serif:'Georgia', serif;
+  --font-script:'Brush Script MT', cursive;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--dark1);
+  font-family: var(--font-serif);
+  color: var(--accent);
+  user-select: none;
+}
+
+/* ============================================================
+   BACKGROUND CANVAS (full-screen, always behind)
+   ============================================================ */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SCENE SYSTEM
+   ============================================================ */
+.scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .8s ease;
+}
+.scene.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ============================================================
+   SCENE 0 – PASSWORD GATE
+   ============================================================ */
+#scene-password {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.7) 0%, rgba(18,0,13,.95) 100%);
+}
+
+.glass-card {
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,95,162,.3);
+  border-radius: 24px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 0 60px rgba(255,95,162,.2), inset 0 0 40px rgba(255,95,162,.05);
+  animation: heartbeat 2.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%,100% { box-shadow: 0 0 60px rgba(255,95,162,.2); }
+  50%      { box-shadow: 0 0 100px rgba(255,95,162,.4); }
+}
+
+.glass-card h2 {
+  font-size: clamp(1.1rem,3vw,1.4rem);
+  font-weight: 400;
+  color: var(--secondary);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.glass-card .sub {
+  font-size: .85rem;
+  color: rgba(255,214,234,.5);
+  margin-bottom: 32px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.pw-dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.pw-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  background: transparent;
+  transition: background .3s, box-shadow .3s;
+}
+.pw-dot.filled {
+  background: var(--primary);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  max-width: 240px;
+  margin: 0 auto;
+}
+.num-btn {
+  background: rgba(255,95,162,.1);
+  border: 1px solid rgba(255,95,162,.25);
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: 1.2rem;
+  padding: 14px;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-serif);
+}
+.num-btn:hover { background: rgba(255,95,162,.25); transform: scale(1.05); }
+.num-btn:active { transform: scale(.95); }
+.num-btn.del { color: var(--primary); }
+
+.pw-error {
+  color: #ff6b6b;
+  font-size: .8rem;
+  margin-top: 14px;
+  min-height: 20px;
+  letter-spacing: 1px;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-10px); }
+  40%      { transform: translateX(10px); }
+  60%      { transform: translateX(-8px); }
+  80%      { transform: translateX(8px); }
+}
+.shake { animation: shake .4s ease; }
+
+/* ============================================================
+   SCENE 1 – DARK ROOM
+   ============================================================ */
+#scene-darkroom { background: #000; }
+
+.switch-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+.switch-hint {
+  font-size: .8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,214,234,.4);
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+@keyframes pulse-hint {
+  0%,100% { opacity: .4; } 50% { opacity: 1; }
+}
+
+.light-switch {
+  width: 60px; height: 100px;
+  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+  border-radius: 12px;
+  border: 2px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(255,95,162,.3), 0 0 60px rgba(255,95,162,.1);
+  transition: box-shadow .3s;
+  animation: switch-glow 3s ease-in-out infinite;
+}
+@keyframes switch-glow {
+  0%,100% { box-shadow: 0 0 20px rgba(255,95,162,.3); }
+  50%      { box-shadow: 0 0 40px rgba(255,95,162,.6); }
+}
+
+.switch-toggle {
+  width: 36px; height: 56px;
+  background: linear-gradient(180deg, #888, #555);
+  border-radius: 8px;
+  border: 1px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+/* ============================================================
+   SCENE 2 – LIGHT REVEAL (handled via JS on dark room canvas)
+   ============================================================ */
+
+/* ============================================================
+   SCENE 3 – BIRTHDAY ROOM
+   ============================================================ */
+#scene-room {
+  background: radial-gradient(ellipse at 50% 30%,
+    rgba(255,150,100,.08) 0%,
+    rgba(60,0,48,.4) 60%,
+    rgba(18,0,13,.8) 100%);
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 5vh;
+}
+
+.room-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Window */
+.room-window {
+  position: absolute;
+  top: 5%; left: 50%;
+  transform: translateX(-50%);
+  width: min(220px,40vw);
+  height: min(280px,35vh);
+  border: 3px solid rgba(255,200,150,.3);
+  border-radius: 8px 8px 0 0;
+  background: radial-gradient(ellipse at 50% 20%,
+    rgba(255,220,180,.15),
+    rgba(20,5,40,.4));
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(255,200,150,.1), inset 0 0 30px rgba(255,200,150,.05);
+}
+.window-cross {
+  position: absolute;
+  inset: 0;
+}
+.window-cross::before {
+  content:''; position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 3px; background: rgba(255,200,150,.2);
+  transform: translateX(-50%);
+}
+.window-cross::after {
+  content:''; position: absolute;
+  top: 40%; left: 0; right: 0;
+  height: 3px; background: rgba(255,200,150,.2);
+  transform: translateY(-50%);
+}
+.moonlight {
+  position: absolute;
+  top: -20%; left: 20%;
+  width: 60%; height: 140%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,240,200,.12), transparent 70%);
+  animation: moonbeam 6s ease-in-out infinite;
+}
+@keyframes moonbeam {
+  0%,100% { opacity: .6; } 50% { opacity: 1; }
+}
+
+/* Fairy Lights */
+.fairy-lights {
+  position: absolute;
+  display: flex;
+  gap: 0;
+}
+.fairy-lights.top-left  { top: 0; left: 0; right: 0; }
+.fairy-lights.top-right { top: 0; right: 0; }
+
+.fairy-string {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  overflow: visible;
+}
+
+.fl-bulb {
+  width: 8px; height: 12px;
+  border-radius: 50% 50% 40% 40%;
+  position: absolute;
+  top: 20px;
+  animation: fl-flicker 2s ease-in-out infinite;
+}
+@keyframes fl-flicker {
+  0%,100% { opacity: 1; filter: brightness(1); }
+  50%      { opacity: .7; filter: brightness(.8); }
+}
+
+/* Balloons */
+.room-balloon {
+  position: absolute;
+  bottom: 0;
+  font-size: clamp(2rem,5vw,3.5rem);
+  animation: balloon-float-room 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px var(--glow));
+}
+@keyframes balloon-float-room {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-20px) rotate(3deg); }
+}
+
+/* Birthday Text */
+.birthday-text-container {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+}
+.birthday-main {
+  font-family: var(--font-script);
+  font-size: clamp(2rem,6vw,4.5rem);
+  color: var(--primary);
+  text-shadow: 0 0 30px var(--glow), 0 0 60px rgba(255,95,162,.3);
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid var(--primary);
+  animation: typewriter 3s steps(20,end) forwards, blink-caret .8s step-end 3s 3;
+  width: 0;
+}
+@keyframes typewriter { to { width: 100%; } }
+@keyframes blink-caret {
+  0%,100% { border-color: var(--primary); }
+  50%      { border-color: transparent; }
+}
+
+.birthday-sub {
+  font-size: clamp(.8rem,2vw,1.1rem);
+  letter-spacing: 6px;
+  color: var(--secondary);
+  opacity: 0;
+  animation: fade-up 1s ease 3.5s forwards;
+}
+
+/* ============================================================
+   SCENE 4 – BALLOON RELEASE
+   ============================================================ */
+#scene-balloons { pointer-events: none; background: transparent; }
+
+.release-balloon {
+  position: absolute;
+  bottom: -100px;
+  font-size: clamp(2rem,4vw,3rem);
+  animation: balloon-rise linear forwards;
+  filter: drop-shadow(0 0 10px var(--glow));
+}
+@keyframes balloon-rise {
+  to { transform: translateY(-110vh) translateX(var(--drift)); opacity: 0; }
+}
+
+/* ============================================================
+   SCENE 5 – WISH WALL
+   ============================================================ */
+#scene-wishes {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.85), rgba(18,0,13,.95));
+  overflow-y: auto;
+  padding: 40px 20px;
+  flex-direction: column;
+  gap: 20px;
+}
+.wishes-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem,4vw,2.8rem);
+  color: var(--primary);
+  text-shadow: 0 0 20px var(--glow);
+  text-align: center;
+  margin-bottom: 20px;
+}
+.envelopes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 800px;
+  width: 100%;
+}
+.envelope {
+  width: min(160px,40vw);
+  height: min(120px,30vw);
+  cursor: pointer;
+  position: relative;
+  transition: transform .3s;
+}
+.envelope:hover { transform: scale(1.05) translateY(-4px); }
+.env-body {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #ffd6ea, #ffb0cf);
+  border-radius: 4px;
+  border: 2px solid rgba(255,95,162,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 4px 20px rgba(255,95,162,.2);
+  position: relative;
+  overflow: hidden;
+}
+.env-flap {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, #ffb0cf, #ff7fb5);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform .4s ease;
+}
+.envelope.open .env-flap { transform: rotateX(180deg); }
+.env-seal {
+  position: absolute;
+  top: 35%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 1.2rem;
+  z-index: 2;
+  transition: opacity .3s;
+}
+.envelope.open .env-seal { opacity: 0; }
+
+.wish-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(10px);
+}
+.wish-modal.visible { display: flex; }
+.wish-paper {
+  background: linear-gradient(135deg, #fff8f5, #ffe8f0);
+  color: #3d0030;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  animation: unfold .4s ease;
+}
+@keyframes unfold {
+  from { transform: scaleY(.1); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+.wish-paper h3 {
+  font-family: var(--font-script);
+  font-size: clamp(1.4rem,3vw,2rem);
+  color: var(--dark3);
+  margin-bottom: 16px;
+}
+.wish-paper p {
+  font-size: clamp(.85rem,2vw,1.05rem);
+  line-height: 1.8;
+  color: #5c1145;
+}
+.wish-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  background: none; border: none;
+  font-size: 1.4rem; cursor: pointer;
+  color: var(--dark3);
+}
+
+/* ============================================================
+   SCENE 6 – CAKE
+   ============================================================ */
+#scene-cake {
+  background: radial-gradient(ellipse at 50% 70%, rgba(255,95,162,.08), rgba(18,0,13,.95));
+  flex-direction: column;
+  gap: 24px;
+}
+.cake-container { position: relative; }
+.cake-svg { width: min(280px,70vw); filter: drop-shadow(0 0 20px rgba(255,95,162,.3)); }
+
+.candle-flame {
+  animation: flame-flicker .3s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+@keyframes flame-flicker {
+  from { transform: scaleX(1) scaleY(1) rotate(-2deg); opacity: 1; }
+  to   { transform: scaleX(.8) scaleY(1.1) rotate(2deg); opacity: .9; }
+}
+.candle-flame.blown { display: none; }
+
+.smoke-particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(200,200,200,.6);
+  pointer-events: none;
+  animation: smoke-rise 1.5s ease-out forwards;
+}
+@keyframes smoke-rise {
+  to { transform: translateY(-60px) translateX(var(--dx)) scale(3); opacity: 0; }
+}
+
+.cake-instruction {
+  font-size: clamp(.85rem,2vw,1.1rem);
+  letter-spacing: 3px;
+  color: var(--secondary);
+  text-transform: uppercase;
+  text-align: center;
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+.blow-btn {
+  background: linear-gradient(135deg, var(--primary), #d44080);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  padding: 12px 32px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px var(--glow);
+  transition: all .2s;
+  font-family: var(--font-serif);
+}
+.blow-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px var(--glow); }
+.blow-btn:disabled { opacity: .5; cursor: default; }
+
+/* ============================================================
+   SCENE 7 – GIFT
+   ============================================================ */
+#scene-gift {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.85), rgba(18,0,13,.95));
+  flex-direction: column;
+  gap: 20px;
+}
+.gift-wrapper {
+  position: relative;
+  width: min(220px,55vw);
+  height: min(220px,55vw);
+  cursor: pointer;
+}
+.gift-box-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 20px rgba(255,95,162,.4)); }
+.gift-instruction {
+  font-size: .9rem;
+  letter-spacing: 3px;
+  color: var(--secondary);
+  text-transform: uppercase;
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+
+.gift-reveal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(18,0,13,.9);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.gift-reveal-overlay.visible { display: flex; }
+.gift-message-card {
+  background: linear-gradient(135deg, #fff8f5, #ffe8f0);
+  color: #3d0030;
+  border-radius: 16px;
+  padding: 36px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  animation: scale-in .5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes scale-in {
+  from { transform: scale(.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.gift-message-card h3 {
+  font-family: var(--font-script);
+  font-size: clamp(1.4rem,3vw,2rem);
+  color: var(--dark3);
+  margin-bottom: 12px;
+}
+.gift-message-card p { font-size: .95rem; line-height: 1.8; color: #5c1145; }
+.gift-close-btn {
+  background: var(--primary);
+  border: none; border-radius: 50px;
+  color: white; font-size: .9rem;
+  padding: 10px 28px; cursor: pointer;
+  box-shadow: 0 0 20px var(--glow);
+  font-family: var(--font-serif);
+}
+
+/* ============================================================
+   SCENE 8 – MEMORY GALLERY
+   ============================================================ */
+#scene-gallery {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.85), rgba(18,0,13,.95));
+  overflow-y: auto;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+.gallery-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem,4vw,2.8rem);
+  color: var(--primary);
+  text-shadow: 0 0 20px var(--glow);
+  text-align: center;
+}
+.memory-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  max-width: 900px;
+  width: 100%;
+  padding-bottom: 20px;
+}
+.polaroid {
+  background: white;
+  padding: 10px 10px 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+  transform: rotate(var(--rot));
+  cursor: pointer;
+  transition: transform .3s, box-shadow .3s;
+  max-width: min(160px,40vw);
+}
+.polaroid:hover { transform: rotate(0) scale(1.08); box-shadow: 0 16px 50px rgba(0,0,0,.6); }
+.polaroid-img {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--secondary), #ffc0d8);
+}
+.polaroid-caption {
+  color: #3d0030;
+  font-size: .7rem;
+  text-align: center;
+  margin-top: 8px;
+  font-family: var(--font-serif);
+}
+.rope-line {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 1px; height: 20px;
+  background: rgba(180,120,80,.5);
+  transform: translateX(-50%);
+}
+
+.photo-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.8);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  gap: 16px;
+}
+.photo-modal.visible { display: flex; }
+.photo-modal-inner {
+  background: white;
+  padding: 16px 16px 50px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  animation: scale-in .4s cubic-bezier(.34,1.56,.64,1);
+}
+.photo-modal-img {
+  width: 100%;
+  aspect-ratio: 1;
+  font-size: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--secondary), #ffc0d8);
+}
+.photo-modal-caption {
+  color: #3d0030;
+  margin-top: 12px;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.photo-close { background: var(--primary); border: none; border-radius: 50px; color: white; padding: 8px 24px; cursor: pointer; font-family: var(--font-serif); margin-top: 8px; }
+
+/* ============================================================
+   SCENE 8.5 – PHOTO ALBUM
+   ============================================================ */
+#scene-album {
+  background: radial-gradient(ellipse at 50% 20%, rgba(60,0,48,.7), rgba(12,0,10,.97));
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  overflow: hidden;
+}
+.album-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem,4.5vw,2.8rem);
+  color: var(--primary);
+  text-shadow: 0 0 24px var(--glow);
+  text-align: center;
+}
+.album-sub {
+  font-size: .8rem;
+  letter-spacing: 1.5px;
+  color: rgba(255,214,234,.55);
+  text-align: center;
+  margin-top: -8px;
+}
+
+.album-stage {
+  position: relative;
+  width: min(380px, 88vw);
+  height: min(440px, 56vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1800px;
+}
+
+.album-book {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.album-page {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #2a0a22, #1a0515);
+  border: 1px solid rgba(255,214,234,.18);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.02) inset;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transition: transform .85s cubic-bezier(.45,.05,.18,1), box-shadow .85s ease;
+}
+/* Pages stack visually behind the active one for book-depth illusion */
+.album-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.35);
+  pointer-events: none;
+}
+.album-page.state-current { transform: rotateY(0deg); z-index: 5; box-shadow: 0 20px 60px rgba(0,0,0,.65); }
+.album-page.state-next    { transform: rotateY(-180deg); z-index: 1; }
+.album-page.state-prev    { transform: rotateY(0deg); z-index: 1; }
+.album-page.state-stack   { transform: rotateY(0deg); z-index: 0; opacity: 0; pointer-events: none; }
+.album-page.flipping-out  { transform: rotateY(-180deg); z-index: 6; }
+.album-page.flipping-in   { transform: rotateY(0deg); z-index: 6; }
+
+.album-polaroid {
+  width: min(220px, 72%);
+  background: linear-gradient(160deg,#fff9fb,#ffeaf3);
+  border-radius: 6px;
+  padding: 10px 10px 16px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.45);
+  transform: rotate(var(--prot, -1.5deg));
+}
+.album-photo-frame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 3px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--secondary), #ffc0d8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.album-photo-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.album-page-number {
+  font-family: var(--font-script);
+  font-size: 1.1rem;
+  color: var(--primary);
+  opacity: .85;
+}
+.album-caption {
+  font-family: var(--font-script);
+  font-size: clamp(1.1rem,2.6vw,1.4rem);
+  color: var(--secondary);
+  text-align: center;
+  line-height: 1.4;
+  text-shadow: 0 0 12px rgba(255,95,162,.25);
+  padding: 0 6px;
+}
+
+.album-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,95,162,.4);
+  background: rgba(36,0,24,.7);
+  color: var(--primary);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  backdrop-filter: blur(4px);
+}
+.album-nav-arrow:hover { background: rgba(255,95,162,.25); box-shadow: 0 0 16px var(--glow); }
+.album-nav-arrow:disabled { opacity: .25; cursor: default; box-shadow: none; }
+.album-nav-prev { left: -8px; }
+.album-nav-next { right: -8px; }
+
+.album-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 320px;
+}
+.album-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: rgba(255,214,234,.25);
+  border: 1px solid rgba(255,95,162,.3);
+  cursor: pointer;
+  transition: all .25s;
+  padding: 0;
+}
+.album-dot.active { background: var(--primary); box-shadow: 0 0 10px var(--glow); transform: scale(1.3); }
+
+.album-finale {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  margin-top: 4px;
+  animation: fade-up .6s ease;
+}
+.album-finale.visible { display: flex; }
+.album-finale-glow {
+  font-size: 2.4rem;
+  animation: heartbeat-big 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px var(--glow));
+}
+.album-finale-msg {
+  font-family: var(--font-script);
+  font-size: clamp(1.2rem,3vw,1.6rem);
+  color: var(--primary);
+  line-height: 1.5;
+  text-shadow: 0 0 20px var(--glow);
+  max-width: 360px;
+}
+.album-continue-btn {
+  margin-top: 6px;
+  background: linear-gradient(135deg, #ffb6d9, var(--primary), #d44080);
+  background-size: 200% 200%;
+  animation: album-btn-shimmer 3s ease-in-out infinite;
+}
+@keyframes album-btn-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@media (max-width: 480px) {
+  .album-nav-prev { left: 2px; }
+  .album-nav-next { right: 2px; }
+}
+
+/* ============================================================
+   SCENE 9 – GAME PORTAL
+   ============================================================ */
+#scene-portal {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.85), rgba(18,0,13,.95));
+  flex-direction: column;
+  gap: 24px;
+}
+.portal-door {
+  width: min(160px,40vw);
+  height: min(280px,50vh);
+  position: relative;
+  cursor: pointer;
+}
+.door-frame {
+  position: absolute;
+  inset: 0;
+  border: 4px solid var(--primary);
+  border-radius: 80px 80px 0 0;
+  box-shadow: 0 0 30px var(--glow), inset 0 0 30px rgba(255,95,162,.1);
+}
+.door-panel {
+  position: absolute;
+  inset: 8px;
+  background: linear-gradient(135deg, var(--dark3), var(--dark2));
+  border-radius: 72px 72px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  transition: transform .8s ease, opacity .8s ease;
+  transform-origin: left center;
+}
+.portal-door:hover .door-panel { transform: perspective(400px) rotateY(-30deg); }
+.door-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 80px 80px 0 0;
+  background: radial-gradient(ellipse at center, rgba(255,95,162,.3), transparent);
+  animation: portal-pulse 2s ease-in-out infinite;
+}
+@keyframes portal-pulse {
+  0%,100% { opacity: .5; } 50% { opacity: 1; }
+}
+.portal-text {
+  font-family: var(--font-script);
+  font-size: clamp(1.4rem,3vw,2rem);
+  color: var(--secondary);
+  text-align: center;
+}
+
+/* ============================================================
+   SCENE 10 – GAME WORLD
+   ============================================================ */
+#scene-games {
+  background: radial-gradient(ellipse at center, rgba(40,0,32,.9), rgba(10,0,8,.98));
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+  gap: 16px;
+}
+.games-header {
+  text-align: center;
+}
+.games-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.6rem,4vw,2.4rem);
+  color: var(--primary);
+  text-shadow: 0 0 20px var(--glow);
+}
+.reward-tracker {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.reward-slot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  opacity: .3;
+  transition: all .3s;
+}
+.reward-slot.earned { opacity: 1; box-shadow: 0 0 12px var(--glow); animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(140px,40vw),1fr));
+  gap: 14px;
+  max-width: 700px;
+  width: 100%;
+}
+.game-card {
+  background: rgba(255,95,162,.08);
+  border: 1px solid rgba(255,95,162,.2);
+  border-radius: 16px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .3s;
+}
+.game-card:hover { background: rgba(255,95,162,.18); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(255,95,162,.2); }
+.game-card.completed { border-color: var(--primary); background: rgba(255,95,162,.12); }
+.game-icon { font-size: 2rem; margin-bottom: 8px; }
+.game-name { font-size: .8rem; letter-spacing: 1px; color: var(--secondary); }
+.game-status { font-size: .7rem; margin-top: 4px; color: rgba(255,214,234,.5); }
+.game-card.completed .game-status { color: var(--primary); }
+
+.games-continue-wrap {
+  text-align: center;
+  margin-top: 8px;
+  padding-bottom: 10px;
+}
+
+/* Game modals */
+.game-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.9);
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+.game-modal.visible { display: flex; }
+.game-panel {
+  background: linear-gradient(135deg, var(--dark2), var(--dark3));
+  border: 1px solid rgba(255,95,162,.3);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.game-panel h3 {
+  font-family: var(--font-script);
+  font-size: clamp(1.4rem,3vw,2rem);
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.game-close-btn {
+  background: none; border: 1px solid rgba(255,95,162,.4);
+  border-radius: 50px; color: var(--secondary);
+  padding: 6px 20px; cursor: pointer;
+  font-family: var(--font-serif); font-size: .85rem;
+}
+.game-close-btn:hover { background: rgba(255,95,162,.1); }
+
+/* Game canvas */
+.game-canvas {
+  border: 1px solid rgba(255,95,162,.2);
+  border-radius: 10px;
+  background: var(--dark1);
+  touch-action: none;
+  max-width: 100%;
+}
+
+/* Memory match grid */
+.memory-grid {
+  display: grid;
+  gap: 8px;
+  justify-content: center;
+}
+.mem-card {
+  width: min(60px,14vw);
+  height: min(60px,14vw);
+  background: linear-gradient(135deg, var(--dark3), var(--dark4));
+  border: 2px solid rgba(255,95,162,.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(1.6rem,5vw);
+  cursor: pointer;
+  transition: all .3s;
+  user-select: none;
+}
+.mem-card.flipped { background: linear-gradient(135deg, var(--dark4),#7a1860); border-color: var(--primary); }
+.mem-card.matched { background: linear-gradient(135deg, #5c1145, #7a1860); border-color: var(--primary); box-shadow: 0 0 12px var(--glow); }
+
+/* Gift hunt grid */
+.hunt-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  max-width: min(320px,85vw);
+  margin: 0 auto;
+}
+.hunt-cell {
+  aspect-ratio: 1;
+  background: rgba(255,95,162,.1);
+  border: 1px solid rgba(255,95,162,.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 1.4rem;
+}
+.hunt-cell:hover { background: rgba(255,95,162,.2); }
+.hunt-cell.revealed { cursor: default; }
+.hunt-cell.revealed.empty::after { content: '✨'; font-size: .8rem; opacity: .5; }
+
+.hunt-message {
+  margin-top: 12px;
+  font-size: .95rem;
+  font-weight: 600;
+  min-height: 1.4em;
+  letter-spacing: .5px;
+}
+.hunt-message.win { color: #5fffb0; text-shadow: 0 0 12px rgba(95,255,176,.5); }
+.hunt-message.lose { color: #ff6b6b; text-shadow: 0 0 12px rgba(255,107,107,.4); }
+
+.try-again-btn {
+  display: none;
+  margin: 12px auto 0;
+}
+.try-again-btn.visible { display: inline-block; }
+
+/* ============================================================
+   SCENE 11 – SECRET AREA UNLOCK (handled in JS overlay)
+   ============================================================ */
+
+/* ============================================================
+   SCENE 12 – SECRET ROOM
+   ============================================================ */
+#scene-secret {
+  background: radial-gradient(ellipse at 50% 30%, rgba(30,0,60,.6), rgba(5,0,20,.98));
+  flex-direction: column;
+  gap: 20px;
+}
+.secret-title {
+  font-family: var(--font-script);
+  font-size: clamp(2rem,5vw,3.5rem);
+  color: var(--primary);
+  text-shadow: 0 0 30px var(--glow), 0 0 80px rgba(255,95,162,.3);
+  text-align: center;
+}
+.firefly {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #ffffa0;
+  box-shadow: 0 0 6px #ffffa0;
+  animation: firefly-move linear infinite;
+}
+@keyframes firefly-move {
+  0%   { transform: translate(0,0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translate(var(--fx),var(--fy)) scale(1.5); opacity: .8; }
+  90%  { opacity: 1; }
+  100% { transform: translate(var(--fx2),var(--fy2)) scale(1); opacity: 0; }
+}
+.petal {
+  position: absolute;
+  font-size: clamp(.8rem,2vw,1.4rem);
+  animation: petal-fall linear infinite;
+  opacity: .7;
+}
+@keyframes petal-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  10%  { opacity: .7; }
+  100% { transform: translateY(110vh) rotate(720deg) translateX(var(--pdx)); opacity: 0; }
+}
+
+/* ============================================================
+   SCENE 13 – DREAM GARDEN
+   ============================================================ */
+#scene-garden {
+  background: radial-gradient(ellipse at 50% 80%, rgba(0,30,0,.6), rgba(5,0,20,.97));
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+.garden-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem,4vw,2.8rem);
+  color: var(--primary);
+  text-shadow: 0 0 20px var(--glow);
+  text-align: center;
+  z-index: 2;
+}
+.garden-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.lantern {
+  position: absolute;
+  font-size: clamp(1.5rem,4vw,2.5rem);
+  animation: lantern-sway 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255,200,80,.6));
+}
+@keyframes lantern-sway {
+  0%,100% { transform: rotate(-5deg); }
+  50%      { transform: rotate(5deg); }
+}
+.glowing-tree {
+  position: absolute;
+  bottom: 0;
+  font-size: clamp(4rem,10vw,8rem);
+  filter: drop-shadow(0 0 20px rgba(255,200,100,.3)) drop-shadow(0 0 60px rgba(100,255,100,.1));
+  animation: tree-glow 3s ease-in-out infinite;
+}
+@keyframes tree-glow {
+  0%,100% { filter: drop-shadow(0 0 20px rgba(255,200,100,.3)); }
+  50%      { filter: drop-shadow(0 0 40px rgba(255,220,100,.6)) drop-shadow(0 0 80px rgba(255,100,180,.2)); }
+}
+.pond {
+  position: absolute;
+  bottom: 5%;
+  left: 50%; transform: translateX(-50%);
+  width: min(200px,50vw);
+  height: min(50px,8vh);
+  background: linear-gradient(180deg, rgba(100,150,255,.15), rgba(50,80,200,.1));
+  border-radius: 50%;
+  border: 1px solid rgba(100,150,255,.2);
+  animation: pond-ripple 4s ease-in-out infinite;
+}
+@keyframes pond-ripple {
+  0%,100% { box-shadow: 0 0 10px rgba(100,150,255,.1); }
+  50%      { box-shadow: 0 0 30px rgba(100,150,255,.2); }
+}
+
+/* ============================================================
+   SCENE 14 – GRAND FINALE
+   ============================================================ */
+#scene-finale {
+  background: radial-gradient(ellipse at center, rgba(10,0,30,.7), rgba(5,0,15,.98));
+  flex-direction: column;
+  gap: 24px;
+  overflow: hidden;
+}
+.finale-name {
+  font-size: clamp(2.5rem,8vw,6rem);
+  font-family: var(--font-script);
+  color: transparent;
+  background: linear-gradient(135deg, var(--primary), var(--secondary), #fff, var(--primary));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 3s linear infinite, fade-up 1s ease;
+  text-shadow: none;
+  text-align: center;
+}
+@keyframes shimmer { to { background-position: 200% center; } }
+
+.firework {
+  position: absolute;
+  pointer-events: none;
+  animation: fw-burst .8s ease-out forwards;
+}
+@keyframes fw-burst {
+  0%   { transform: scale(0); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* ============================================================
+   SCENE 15 – ENDING
+   ============================================================ */
+#scene-ending {
+  background: radial-gradient(ellipse at center, rgba(60,0,48,.6), rgba(18,0,13,.97));
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+  padding: 40px;
+}
+.ending-message {
+  font-family: var(--font-script);
+  font-size: clamp(1.4rem,3.5vw,2.4rem);
+  color: var(--secondary);
+  line-height: 1.8;
+  text-shadow: 0 0 20px rgba(255,95,162,.3);
+  animation: fade-up 2s ease;
+}
+.ending-heart {
+  font-size: 3rem;
+  animation: heartbeat-big 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px var(--glow));
+}
+@keyframes heartbeat-big {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+/* ============================================================
+   NAVIGATION / NEXT BUTTON
+   ============================================================ */
+.next-btn {
+  background: linear-gradient(135deg, var(--primary), #d44080);
+  border: none; border-radius: 50px;
+  color: white;
+  font-size: clamp(.85rem,2vw,1rem);
+  padding: 12px 36px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px var(--glow);
+  transition: all .2s;
+  font-family: var(--font-serif);
+  position: relative;
+  z-index: 5;
+}
+.next-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px var(--glow); }
+
+/* ============================================================
+   SHARED UTILITIES
+   ============================================================ */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* Mouse glow */
+#mouseGlow {
+  position: fixed;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,95,162,.06), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%,-50%);
+  transition: transform .1s;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark1); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, var(--primary), #d44080);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-size: .9rem;
+  letter-spacing: 1px;
+  z-index: 1000;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Secret unlock overlay */
+.secret-unlock-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0,0,0,.95);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  padding: 40px;
+}
+.secret-unlock-overlay.visible { display: flex; }
+.unlock-title {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem,4vw,3rem);
+  color: var(--primary);
+  text-shadow: 0 0 30px var(--glow);
+}
+/* ============================================================
+   GAME-SPECIFIC: STAR / CUPID CANVASES
+   ============================================================ */
+#starCanvas { cursor: pointer; }
+#cupidCanvas { cursor: crosshair; }
+
+/* ============================================================
+   GAME 1: SUPRIYA PHOTO PUZZLE
+   ============================================================ */
+.photo-puzzle-panel { max-width: 420px; }
+
+.puzzle-stage {
+  position: relative;
+  width: min(300px, 78vw);
+  height: min(300px, 78vw);
+  margin: 6px auto 0;
+}
+
+.puzzle-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  padding: 8px;
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,95,162,.3);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(255,95,162,.2), inset 0 0 30px rgba(255,95,162,.05);
+}
+
+.puzzle-piece {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.15);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.puzzle-piece:active { transform: scale(.96); }
+.puzzle-piece.movable:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 16px var(--glow), 0 4px 14px rgba(0,0,0,.4);
+  filter: brightness(1.08);
+}
+.puzzle-piece.blank {
+  cursor: default;
+  background: rgba(0,0,0,.25);
+  border: 1px dashed rgba(255,95,162,.25);
+  box-shadow: none;
+}
+.puzzle-piece.blank:hover { transform: none; box-shadow: none; filter: none; }
+.puzzle-piece.just-moved { animation: piece-pop .25s ease; }
+@keyframes piece-pop {
+  0%   { transform: scale(.92); }
+  60%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.puzzle-reveal {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: rgba(18,0,13,.25);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,95,162,.4);
+  box-shadow: 0 0 50px rgba(255,95,162,.35), inset 0 0 30px rgba(255,95,162,.08);
+  animation: reveal-in .6s cubic-bezier(.34,1.56,.64,1);
+}
+.puzzle-reveal.visible { display: flex; }
+.puzzle-reveal img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.puzzle-reveal-msg {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 14px 10px;
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: clamp(.95rem, 3vw, 1.2rem);
+  color: #fff;
+  background: linear-gradient(0deg, rgba(61,0,48,.85), rgba(61,0,48,0));
+  text-shadow: 0 0 12px rgba(255,95,162,.6);
+}
+@keyframes reveal-in {
+  from { opacity: 0; transform: scale(.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   GAME 6: LUCKY BIRTHDAY WHEEL
+   ============================================================ */
+.wheel-wrap {
+  position: relative;
+  width: min(220px, 60vw);
+  height: min(220px, 60vw);
+  margin: 8px auto 0;
+}
+.wheel-pointer {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  color: var(--primary);
+  z-index: 3;
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+.wheel-disc {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  position: relative;
+  border: 4px solid var(--primary);
+  box-shadow: 0 0 30px var(--glow), inset 0 0 20px rgba(0,0,0,.3);
+  transition: transform 4s cubic-bezier(.17,.67,.16,.99);
+  overflow: hidden;
+  background: var(--dark2);
+}
+.wheel-disc .wheel-seg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transform-origin: 50% 50%;
+}
+.wheel-disc .wheel-seg span {
+  display: inline-block;
+  transform: translateY(-70px);
+  filter: drop-shadow(0 0 4px rgba(0,0,0,.5));
+}
+.wheel-hub {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 30px; height: 30px;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(circle, #fff, var(--secondary));
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  z-index: 2;
+  box-shadow: 0 0 12px var(--glow);
+}
+.wheel-result {
+  margin-top: 12px;
+  min-height: 50px;
+  font-size: .95rem;
+  color: var(--secondary);
+  line-height: 1.6;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wheel-result.win strong { color: #5fffb0 !important; text-shadow: 0 0 12px rgba(95,255,176,.5); }
+.wheel-result.lose strong { color: #ff8a8a !important; text-shadow: 0 0 12px rgba(255,138,138,.4); }
+#spinWheelBtn:disabled { opacity: .5; cursor: default; transform: none; }
+
+/* ============================================================
+   GAME 7: BUTTERFLY RESCUE
+   ============================================================ */
+.rescue-grid {
+  display: grid;
+  gap: 8px;
+  justify-content: center;
+}
+.rescue-bubble {
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), rgba(255,95,162,.12) 60%, rgba(255,95,162,.05));
+  border: 2px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(1.6rem,5vw);
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 0 14px rgba(255,255,255,.15), inset 0 0 10px rgba(255,255,255,.2);
+  animation: bubble-float 3s ease-in-out infinite;
+  transition: transform .25s, opacity .4s;
+}
+@keyframes bubble-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.rescue-bubble.popped {
+  animation: bubble-pop .35s ease forwards;
+  cursor: default;
+  border-color: rgba(255,95,162,.4);
+  background: rgba(255,95,162,.1);
+  box-shadow: 0 0 16px var(--glow);
+}
+@keyframes bubble-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+.rescue-bubble.flutter-away {
+  animation: butterfly-flutter-away 1.2s ease forwards;
+}
+@keyframes butterfly-flutter-away {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(.7); opacity: .35; }
+}
+.rescue-bubble.empty-pop {
+  border-color: rgba(255,255,255,.15);
+  background: rgba(255,255,255,.04);
+  box-shadow: none;
+  opacity: .45;
+}
+</style>
+
+</head>
+<body>
+
+<!-- Background Canvas -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Mouse Glow -->
+<div id="mouseGlow"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ====================================================
+     SCENE 0: PASSWORD GATE
+     ==================================================== -->
+<div class="scene active" id="scene-password">
+  <div class="glass-card">
+    <h2>A surprise awaits<br>my favourite person...</h2>
+    <div class="sub">Enter the secret code, didi</div>
+    <div class="pw-dots">
+      <div class="pw-dot" id="d0"></div>
+      <div class="pw-dot" id="d1"></div>
+      <div class="pw-dot" id="d2"></div>
+      <div class="pw-dot" id="d3"></div>
+    </div>
+    <div class="numpad" id="numpad">
+      <button class="num-btn" data-n="1">1</button>
+      <button class="num-btn" data-n="2">2</button>
+      <button class="num-btn" data-n="3">3</button>
+      <button class="num-btn" data-n="4">4</button>
+      <button class="num-btn" data-n="5">5</button>
+      <button class="num-btn" data-n="6">6</button>
+      <button class="num-btn" data-n="7">7</button>
+      <button class="num-btn" data-n="8">8</button>
+      <button class="num-btn" data-n="9">9</button>
+      <button class="num-btn del" data-n="del">⌫</button>
+      <button class="num-btn" data-n="0">0</button>
+      <button class="num-btn" data-n="ok">✓</button>
+    </div>
+    <div class="pw-error" id="pwError"></div>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 1: DARK ROOM
+     ==================================================== -->
+<div class="scene" id="scene-darkroom">
+  <div class="switch-container" id="switchBtn">
+    <div class="switch-hint">click to begin</div>
+    <div class="light-switch">
+      <div class="switch-toggle">🔌</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 3: BIRTHDAY ROOM (scene 2 = light animation, inline)
+     ==================================================== -->
+<div class="scene" id="scene-room">
+  <div class="room-scene" id="roomScene">
+    <!-- window -->
+    <div class="room-window">
+      <div class="window-cross"></div>
+      <div class="moonlight"></div>
+    </div>
+  </div>
+  <div class="birthday-text-container">
+    <div class="birthday-main" id="birthdayMain">Happy Birthday Monisha</div>
+    <div class="birthday-sub">✨ &nbsp; Wishing you a magical day &nbsp; ✨</div>
+  </div>
+  <button class="next-btn" id="toBalloonsBtn" style="margin-top:16px;opacity:0;transition:opacity 1s 5s;pointer-events:none">
+    Continue ✨
+  </button>
+</div>
+
+<!-- ====================================================
+     SCENE 4: BALLOONS
+     ==================================================== -->
+<div class="scene" id="scene-balloons">
+  <canvas id="balloonCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+</div>
+
+<!-- ====================================================
+     SCENE 5: WISH WALL
+     ==================================================== -->
+<div class="scene" id="scene-wishes">
+  <div class="wishes-title">💌 Wishes For You</div>
+  <div class="envelopes-grid" id="envelopesGrid"></div>
+  <button class="next-btn" id="toSceneCake" style="margin-top:10px">Next Chapter 🎂</button>
+  <div class="wish-modal" id="wishModal">
+    <div class="wish-paper">
+      <button class="wish-close" id="wishClose">✕</button>
+      <h3 id="wishTitle"></h3>
+      <p id="wishText"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 6: CAKE
+     ==================================================== -->
+<div class="scene" id="scene-cake">
+  <div style="font-family:var(--font-script);font-size:clamp(1.6rem,4vw,2.4rem);color:var(--primary);text-shadow:0 0 20px var(--glow);text-align:center;">
+    Make a Wish 🎂
+  </div>
+  <div class="cake-container" id="cakeContainer">
+    <!-- Cake SVG -->
+    <svg class="cake-svg" viewBox="0 0 200 220" id="cakeSVG">
+      <!-- Plate -->
+      <ellipse cx="100" cy="200" rx="90" ry="12" fill="rgba(255,150,180,.3)"/>
+      <!-- Bottom tier -->
+      <rect x="20" y="140" width="160" height="55" rx="8" fill="#d44080"/>
+      <rect x="20" y="140" width="160" height="12" rx="4" fill="#ff7db3"/>
+      <!-- Middle tier -->
+      <rect x="35" y="95" width="130" height="50" rx="8" fill="#ff5fa2"/>
+      <rect x="35" y="95" width="130" height="12" rx="4" fill="#ff9eca"/>
+      <!-- Top tier -->
+      <rect x="55" y="58" width="90" height="42" rx="8" fill="#ff85b8"/>
+      <rect x="55" y="58" width="90" height="10" rx="4" fill="#ffb3d1"/>
+      <!-- Frosting drips bottom -->
+      <path d="M20 152 Q30 145 40 152 Q50 159 60 152 Q70 145 80 152 Q90 159 100 152 Q110 145 120 152 Q130 159 140 152 Q150 145 160 152 Q170 159 180 152" stroke="white" stroke-width="4" fill="none" opacity=".5"/>
+      <!-- Decoration dots -->
+      <circle cx="50" cy="170" r="4" fill="rgba(255,255,255,.6)"/>
+      <circle cx="100" cy="175" r="4" fill="rgba(255,255,255,.6)"/>
+      <circle cx="150" cy="170" r="4" fill="rgba(255,255,255,.6)"/>
+      <circle cx="70" cy="118" r="3" fill="rgba(255,255,255,.5)"/>
+      <circle cx="130" cy="118" r="3" fill="rgba(255,255,255,.5)"/>
+      <!-- Candles -->
+      <g id="candle1">
+        <rect x="73" y="36" width="8" height="24" rx="2" fill="#fffde7"/>
+        <ellipse cx="77" cy="36" rx="4" ry="3" fill="#ffb300"/>
+        <!-- flame -->
+        <g class="candle-flame" id="flame1">
+          <ellipse cx="77" cy="28" rx="4" ry="7" fill="#ff6600" opacity=".9"/>
+          <ellipse cx="77" cy="26" rx="2.5" ry="5" fill="#ffcc00"/>
+          <ellipse cx="77" cy="25" rx="1.5" ry="3" fill="white" opacity=".8"/>
+        </g>
+      </g>
+      <g id="candle2">
+        <rect x="95" y="30" width="8" height="30" rx="2" fill="#fce4ec"/>
+        <ellipse cx="99" cy="30" rx="4" ry="3" fill="#e91e63"/>
+        <g class="candle-flame" id="flame2">
+          <ellipse cx="99" cy="22" rx="4" ry="7" fill="#ff6600" opacity=".9"/>
+          <ellipse cx="99" cy="20" rx="2.5" ry="5" fill="#ffcc00"/>
+          <ellipse cx="99" cy="19" rx="1.5" ry="3" fill="white" opacity=".8"/>
+        </g>
+      </g>
+      <g id="candle3">
+        <rect x="117" y="36" width="8" height="24" rx="2" fill="#f3e5f5"/>
+        <ellipse cx="121" cy="36" rx="4" ry="3" fill="#9c27b0"/>
+        <g class="candle-flame" id="flame3">
+          <ellipse cx="121" cy="28" rx="4" ry="7" fill="#ff6600" opacity=".9"/>
+          <ellipse cx="121" cy="26" rx="2.5" ry="5" fill="#ffcc00"/>
+          <ellipse cx="121" cy="25" rx="1.5" ry="3" fill="white" opacity=".8"/>
+        </g>
+      </g>
+      <!-- "19" text on cake -->
+      <text x="100" y="175" text-anchor="middle" font-size="16" fill="white" font-family="Georgia" opacity=".8">🎂</text>
+    </svg>
+  </div>
+  <div class="cake-instruction" id="cakeInstruction">✨ Click the button to blow out the candles ✨</div>
+  <button class="blow-btn" id="blowBtn">🌬️ Blow Candles</button>
+  <button class="next-btn" id="toGiftBtn" style="display:none;margin-top:8px">Open Your Gift 🎁</button>
+</div>
+
+<!-- ====================================================
+     SCENE 7: GIFT
+     ==================================================== -->
+<div class="scene" id="scene-gift">
+  <div style="font-family:var(--font-script);font-size:clamp(1.6rem,4vw,2.4rem);color:var(--primary);text-shadow:0 0 20px var(--glow);">
+    A Special Gift For You
+  </div>
+  <div class="gift-wrapper" id="giftWrapper">
+    <svg class="gift-box-svg" viewBox="0 0 200 200" id="giftSVG">
+      <!-- Box body -->
+      <rect x="20" y="100" width="160" height="90" rx="6" fill="#d44080"/>
+      <rect x="20" y="100" width="160" height="16" fill="#ff5fa2"/>
+      <!-- Ribbon vertical -->
+      <rect x="91" y="100" width="18" height="90" fill="#ff85b8" opacity=".7"/>
+      <!-- Box lid -->
+      <rect x="10" y="80" width="180" height="28" rx="6" fill="#ff5fa2" id="giftLid"/>
+      <!-- Ribbon on lid -->
+      <rect x="91" y="80" width="18" height="28" fill="#ffb3d1" opacity=".7" id="giftLidRibbon"/>
+      <!-- Bow -->
+      <g id="giftBow">
+        <ellipse cx="80" cy="82" rx="22" ry="12" fill="#ff85b8" transform="rotate(-20,80,82)"/>
+        <ellipse cx="120" cy="82" rx="22" ry="12" fill="#ff85b8" transform="rotate(20,120,82)"/>
+        <circle cx="100" cy="82" r="10" fill="#ffd6ea"/>
+        <circle cx="100" cy="82" r="6" fill="#ff5fa2"/>
+      </g>
+      <!-- Stars on box -->
+      <text x="45" y="150" font-size="16" opacity=".7">⭐</text>
+      <text x="140" y="150" font-size="16" opacity=".7">⭐</text>
+      <text x="90" y="178" font-size="16" opacity=".7">💖</text>
+    </svg>
+  </div>
+  <div class="gift-instruction" id="giftInstruction">✨ Click the gift to open it ✨</div>
+  <div class="gift-reveal-overlay" id="giftReveal">
+    <div style="font-size:3rem;animation:heartbeat-big 1.5s ease-in-out infinite">🌹🦋🌸</div>
+    <div class="gift-message-card">
+      <h3>💝 From Your Little Brother</h3>
+      <p>
+        Inside this gift is something no shop can sell —<br>
+        every memory we've shared, every fight we made up from, every time you had my back.<br><br>
+        You deserve all the good things coming your way, didi.<br>
+        Keep being the strong, caring person you are — and yes, I still owe you for covering for me that one time. 😄
+      </p>
+    </div>
+    <button class="gift-close-btn" id="giftCloseBtn">Continue 🌟</button>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 8: MEMORY GALLERY
+     ==================================================== -->
+<div class="scene" id="scene-gallery">
+  <div class="gallery-title">📸 Memory Wall</div>
+  <div class="memory-wall" id="memoryWall"></div>
+  <button class="next-btn" id="toPortalBtn" style="margin-top:4px">Open Our Album 📖</button>
+  <div class="photo-modal" id="photoModal">
+    <div class="photo-modal-inner">
+      <div class="photo-modal-img" id="photoModalImg"></div>
+      <div class="photo-modal-caption" id="photoModalCaption"></div>
+    </div>
+    <button class="photo-close" id="photoClose">Close 💫</button>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 8.5: PHOTO ALBUM
+     ==================================================== -->
+<div class="scene" id="scene-album">
+  <div class="album-title">📖 Our Memories Album</div>
+  <div class="album-sub">Every page, a little piece of you 💕</div>
+
+  <div class="album-stage" id="albumStage">
+    <div class="album-book" id="albumBook">
+      <!-- Pages injected by JS -->
+    </div>
+
+    <button class="album-nav-arrow album-nav-prev" id="albumPrevBtn" aria-label="Previous page">‹</button>
+    <button class="album-nav-arrow album-nav-next" id="albumNextBtn" aria-label="Next page">›</button>
+  </div>
+
+  <div class="album-dots" id="albumDots"></div>
+
+  <div class="album-finale" id="albumFinale">
+    <div class="album-finale-glow">💖</div>
+    <div class="album-finale-msg">This is only the beginning, Monisha...<br>So much more waits ahead. ✨</div>
+    <button class="next-btn album-continue-btn" id="toPortalFromAlbumBtn">Continue the Journey 🎮</button>
+  </div>
+</div>
+
+<!-- ====================================================
+     SCENE 9: GAME PORTAL
+     ==================================================== -->
+<div class="scene" id="scene-portal">
+  <div class="portal-text" style="margin-bottom:8px">✨ A magical world awaits ✨</div>
+  <div class="portal-door" id="portalDoor">
+    <div class="door-glow"></div>
+    <div class="door-frame"></div>
+    <div class="door-panel">🎮</div>
+  </div>
+  <div class="portal-text" style="margin-top:8px">Click to Enter</div>
+</div>
+
+<!-- ====================================================
+     SCENE 10: GAME WORLD
+     ==================================================== -->
+<div class="scene" id="scene-games">
+  <div class="games-header">
+    <div class="games-title">🎮 Birthday Game World</div>
+    <div style="font-size:.8rem;color:rgba(255,214,234,.5);letter-spacing:2px;margin-top:4px">Play any games you like — go whenever you're ready</div>
+    <div class="reward-tracker" id="rewardTracker"></div>
+  </div>
+  <div class="games-grid" id="gamesGrid"></div>
+
+  <div class="games-continue-wrap">
+    <button class="next-btn" id="toSecretBtn">Continue to Secret Room ✨</button>
+    <div style="font-size:.75rem;color:rgba(255,214,234,.45);margin-top:8px">You can go anytime — finishing every game is optional</div>
+  </div>
+</div>
+
+<!-- ====================================================
+     GAME MODALS
+     ==================================================== -->
+
+<!-- Game 1: Butterfly Garden (MAIN GAME) -->
+<div class="game-modal" id="gameModal1">
+  <div class="game-panel">
+    <h3>🦋 Butterfly Garden</h3>
+    <p style="font-size:.8rem;color:var(--secondary);margin-bottom:8px">
+      Catch the glowing butterflies as they flutter by!
+    </p>
+
+    <canvas id="butterflyCanvas" class="game-canvas" width="300" height="250"></canvas>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Butterflies: <span id="butterflyScore">0</span> / 15
+    </div>
+  </div>
+
+  <button class="game-close-btn" id="closeGame1">← Back</button>
+</div>
+
+<!-- Game 2: Memory Match -->
+<div class="game-modal" id="gameModal2">
+  <div class="game-panel">
+    <h3>🧠 Memory Match</h3>
+    <p style="font-size:.8rem;color:var(--secondary);margin-bottom:8px">
+      Find all 8 pairs — you only get 15 attempts!
+    </p>
+
+    <div class="memory-grid" id="memoryGrid"></div>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Pairs: <span id="memPairs">0</span> / 8 &nbsp;•&nbsp; Attempts left: <span id="memTries">15</span>
+    </div>
+    <div id="memMessage" class="hunt-message"></div>
+    <button id="memTryAgainBtn" class="next-btn try-again-btn">Try Again 🔄</button>
+  </div>
+
+  <button class="game-close-btn" id="closeGame2">← Back</button>
+</div>
+
+<!-- Game 3: Hidden Gift Hunt -->
+<div class="game-modal" id="gameModal3">
+  <div class="game-panel">
+    <h3>🎁 Hidden Gift Hunt</h3>
+    <p style="font-size:.8rem;color:var(--secondary);margin-bottom:8px">
+      Find all 5 hidden gifts among the petals — you only get 15 clicks!
+    </p>
+
+    <div class="hunt-grid" id="huntGrid"></div>
+
+    <div style="margin-top:10px;font-size:.85rem;color:var(--secondary)">
+      Found: <span id="huntFound">0</span> / 5 &nbsp;•&nbsp; Attempts left: <span id="huntTries">15</span>
+    </div>
+    <div id="huntMessage" class="hunt-message"></div>
+    <button id="huntTryAgainBtn" class="next-btn try-again-btn">Try Again 🔄</button>
+  </div>
+
+  <button class="game-close-btn" id="closeGame3">← Back</button>
+</div>
+
+<!-- Game 4: Star Catcher -->
+<div class="game-modal" id="gameModal4">
+  <div class="game-panel">
+    <h3>🌟 Star Catcher</h3>
+
+    <canvas id="starCanvas" class="game-canvas" width="300" height="250"></canvas>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Stars: <span id="starScore">0</span> / 20
+    </div>
+  </div>
+
+  <button class="game-close-btn" id="closeGame4">← Back</button>
+</div>
+
+<!-- Game 5: Cupid Arrow -->
+<div class="game-modal" id="gameModal5">
+  <div class="game-panel">
+    <h3>🎯 Cupid Arrow</h3>
+
+    <canvas id="cupidCanvas" class="game-canvas" width="300" height="250"></canvas>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Hits: <span id="cupidScore">0</span> / 10
+    </div>
+  </div>
+
+  <button class="game-close-btn" id="closeGame5">← Back</button>
+</div>
+
+<!-- Game 6: Lucky Birthday Wheel -->
+<div class="game-modal" id="gameModal6">
+  <div class="game-panel">
+    <h3>🎡 Lucky Birthday Wheel</h3>
+    <p style="font-size:.8rem;color:var(--secondary);margin-bottom:8px">
+      Spin to reveal a birthday blessing — only 3 spins allowed!
+    </p>
+
+    <div class="wheel-wrap">
+      <div class="wheel-pointer">▼</div>
+      <div id="birthdayWheel" class="wheel-disc"></div>
+    </div>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Spins left: <span id="wheelTries">3</span>
+    </div>
+
+    <button id="spinWheelBtn" class="next-btn" style="margin-top:14px">
+      Spin Wheel ✨
+    </button>
+
+    <div id="wheelResult" class="wheel-result"></div>
+    <button id="wheelTryAgainBtn" class="next-btn try-again-btn">Try Again 🔄</button>
+  </div>
+
+  <button class="game-close-btn" id="closeGame6">← Back</button>
+</div>
+
+<!-- Game 7: Butterfly Rescue (optional mini game) -->
+<div class="game-modal" id="gameModal7">
+  <div class="game-panel">
+    <h3>🐰 Butterfly Rescue</h3>
+    <p style="font-size:.8rem;color:var(--secondary);margin-bottom:8px">
+      Tap the bubbles to free the trapped butterflies — some bubbles are empty, you only get 15 taps!
+    </p>
+
+    <div id="rescueGrid" class="rescue-grid"></div>
+
+    <div style="margin-top:8px;font-size:.85rem;color:var(--secondary)">
+      Rescued: <span id="rescueScore">0</span> / 10 &nbsp;•&nbsp; Taps left: <span id="rescueTries">15</span>
+    </div>
+    <div id="rescueMessage" class="hunt-message"></div>
+    <button id="rescueTryAgainBtn" class="next-btn try-again-btn">Try Again 🔄</button>
+  </div>
+
+  <button class="game-close-btn" id="closeGame7">← Back</button>
+</div>
+
+<!-- ====================================================
+     SCENE 12: SECRET ROOM
+     ==================================================== -->
+<div class="scene" id="scene-secret">
+  <div class="secret-title">🌙 The Secret Garden</div>
+  <div style="font-size:.9rem;letter-spacing:3px;color:var(--secondary);text-align:center">
+    A place made only for my didi
+  </div>
+  <div style="font-size:clamp(1rem,2.5vw,1.3rem);color:rgba(255,214,234,.7);max-width:400px;text-align:center;line-height:1.9;animation:fade-up 2s ease;">
+    In a world full of ordinary moments,<br>
+    you are the extraordinary one.<br>
+    Every room in this world was built<br>
+    just to celebrate <strong style="color:var(--primary)">you</strong>. 🌸
+  </div>
+  <button class="next-btn" id="toGardenBtn">Enter Dream Garden 🌿</button>
+</div>
+
+<!-- ====================================================
+     SCENE 13: DREAM GARDEN
+     ==================================================== -->
+<div class="scene" id="scene-garden">
+  <div class="garden-scene" id="gardenScene"></div>
+  <div class="garden-title" style="z-index:2;position:relative">🌿 Dream Garden</div>
+  <div style="font-size:clamp(.85rem,2vw,1.05rem);color:rgba(255,214,234,.7);text-align:center;max-width:380px;line-height:1.8;z-index:2;position:relative;animation:fade-up 1.5s ease;">
+    A garden blooms where happy memories grow.<br>
+    Every flower here is a wish for your happiness, didi. 🌸
+  </div>
+  <button class="next-btn" id="toFinaleBtn" style="position:relative;z-index:2">Grand Finale 🎆</button>
+</div>
+
+<!-- ====================================================
+     SCENE 14: GRAND FINALE
+     ==================================================== -->
+<div class="scene" id="scene-finale">
+  <div style="font-size:.85rem;letter-spacing:4px;color:var(--secondary);text-transform:uppercase;animation:fade-up 1s ease">
+    ✨ For My Favourite Didi ✨
+  </div>
+  <div class="finale-name" id="finaleName">SUPRIYA</div>
+  <div style="font-size:clamp(.9rem,2vw,1.2rem);color:var(--secondary);text-align:center;animation:fade-up 1.5s ease;letter-spacing:2px">
+    The stars spell your name tonight 🌟
+  </div>
+  <canvas id="fireworkCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  <button class="next-btn" id="toEndingBtn" style="position:relative;z-index:2;margin-top:20px">The Final Message 💌</button>
+</div>
+
+<!-- ====================================================
+     SCENE 15: ENDING
+     ==================================================== -->
+<div class="scene" id="scene-ending">
+  <div class="ending-heart">💖</div>
+  <div class="ending-message" id="endingMsg"></div>
+  <div style="font-size:.8rem;letter-spacing:4px;color:rgba(255,214,234,.4);margin-top:16px;animation:fade-up 3s ease">
+    HAPPY BIRTHDAY SUPRIYA
+  </div>
+</div>
+
+<!-- Celebration overlay for confetti -->
+<div class="celebration-overlay" id="celebrationOverlay"></div>
+
+<script>
+/* ============================================================
+   BACKGROUND CANVAS ENGINE
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, mouse = {x:0,y:0};
+  let particles = [];
+  let hearts = [];
+  let bokeh = [];
+  let time = 0;
+  let aurora1Offset = 0, aurora2Offset = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    initBokeh();
+  }
+
+  function initBokeh() {
+    bokeh = [];
+    for (let i = 0; i < 35; i++) {
+      bokeh.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 4 + Math.random() * 16,
+        a: Math.random() * Math.PI * 2,
+        speed: .0002 + Math.random() * .0004,
+        opacity: .04 + Math.random() * .1,
+        color: Math.random() > .5 ? 'rgba(255,95,162,' : 'rgba(255,200,220,'
+      });
+    }
+    particles = [];
+    for (let i = 0; i < 60; i++) {
+      particles.push(newParticle());
+    }
+    hearts = [];
+    for (let i = 0; i < 8; i++) {
+      hearts.push(newHeart());
+    }
+  }
+
+  function newParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - .5) * .3,
+      vy: -.1 - Math.random() * .3,
+      r: .5 + Math.random() * 1.5,
+      opacity: .2 + Math.random() * .5,
+      life: 0,
+      maxLife: 200 + Math.random() * 300
+    };
+  }
+
+  function newHeart() {
+    return {
+      x: Math.random() * W,
+      y: H + 30,
+      size: 8 + Math.random() * 16,
+      speed: .2 + Math.random() * .5,
+      opacity: .05 + Math.random() * .12,
+      sway: (Math.random() - .5) * .5,
+      swaySpeed: .005 + Math.random() * .01,
+      swayAmt: 20 + Math.random() * 40,
+      swayOff: Math.random() * Math.PI * 2
+    };
+  }
+
+  function drawHeart(ctx, x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * .3);
+    ctx.bezierCurveTo(x, y, x - size, y, x - size, y + size * .4);
+    ctx.bezierCurveTo(x - size, y + size * .8, x, y + size * 1.2, x, y + size * 1.4);
+    ctx.bezierCurveTo(x, y + size * 1.2, x + size, y + size * .8, x + size, y + size * .4);
+    ctx.bezierCurveTo(x + size, y, x, y, x, y + size * .3);
+    ctx.closePath();
+  }
+
+  function drawLayer1(ctx) {
+    // Deep romantic night sky
+    const grad = ctx.createRadialGradient(W/2,H*.3,0, W/2,H*.5,Math.max(W,H));
+    grad.addColorStop(0, '#3d0030');
+    grad.addColorStop(.4, '#240018');
+    grad.addColorStop(1, '#12000d');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function drawLayer2(ctx) {
+    // Pink-purple cinematic gradient overlay
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, 'rgba(92,17,69,.3)');
+    grad.addColorStop(.5, 'rgba(61,0,48,.15)');
+    grad.addColorStop(1, 'rgba(18,0,13,.3)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function drawLayer3(ctx) {
+    // Aurora clouds
+    aurora1Offset += .0008;
+    aurora2Offset += .0005;
+    [
+      { yo: H*.15, amp: 80, freq: .003, off: aurora1Offset, c1: 'rgba(255,95,162,.04)', c2: 'rgba(180,0,120,.02)' },
+      { yo: H*.35, amp: 60, freq: .004, off: aurora2Offset, c1: 'rgba(255,150,200,.03)', c2: 'rgba(120,0,180,.015)' }
+    ].forEach(a => {
+      const grad = ctx.createLinearGradient(0, a.yo - a.amp, 0, a.yo + a.amp);
+      grad.addColorStop(0, 'transparent');
+      grad.addColorStop(.5, a.c1);
+      grad.addColorStop(1, 'transparent');
+      ctx.save();
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(0, a.yo);
+      for (let x = 0; x <= W; x += 10) {
+        ctx.lineTo(x, a.yo + Math.sin(x * a.freq + a.off) * a.amp);
+      }
+      ctx.lineTo(W, a.yo + a.amp * 2); ctx.lineTo(0, a.yo + a.amp * 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawLayer4(ctx) {
+    // Bokeh lights
+    bokeh.forEach(b => {
+      b.a += b.speed;
+      const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      grad.addColorStop(0, b.color + b.opacity + ')');
+      grad.addColorStop(1, b.color + '0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function drawLayer5(ctx) {
+    // Sparkles / atmospheric particles
+    particles.forEach((p, i) => {
+      p.x += p.vx; p.y += p.vy; p.life++;
+      if (p.life > p.maxLife || p.y < -10) { particles[i] = newParticle(); return; }
+      const fade = p.life < 30 ? p.life/30 : p.life > p.maxLife - 30 ? (p.maxLife-p.life)/30 : 1;
+      ctx.save();
+      ctx.globalAlpha = p.opacity * fade;
+      ctx.fillStyle = '#ffd6ea';
+      // sparkle shape
+      const s = p.r;
+      ctx.beginPath();
+      for (let k = 0; k < 4; k++) {
+        const ang = (k / 4) * Math.PI * 2 + time * .02;
+        ctx.lineTo(p.x + Math.cos(ang) * s * 3, p.y + Math.sin(ang) * s * 3);
+        ctx.lineTo(p.x + Math.cos(ang + Math.PI/4) * s, p.y + Math.sin(ang + Math.PI/4) * s);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawLayer6(ctx) {
+    // Floating hearts (subtle)
+    hearts.forEach((h, i) => {
+      h.y -= h.speed;
+      h.swayOff += h.swaySpeed;
+      h.x += Math.sin(h.swayOff) * h.sway * .1;
+      if (h.y < -h.size * 2) { hearts[i] = newHeart(); return; }
+      ctx.save();
+      ctx.globalAlpha = h.opacity;
+      ctx.fillStyle = 'rgba(255,95,162,1)';
+      drawHeart(ctx, h.x, h.y, h.size);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawLayer7(ctx) {
+    // Mouse glow interaction
+    const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 200);
+    grad.addColorStop(0, 'rgba(255,95,162,.04)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function drawLayer8(ctx) {
+    // Fairy light reflections (diagonal light streaks)
+    ctx.save();
+    ctx.globalAlpha = .02;
+    for (let i = 0; i < 5; i++) {
+      const x = W * (i / 4);
+      const grad = ctx.createLinearGradient(x - 30, 0, x + 30, H);
+      grad.addColorStop(0, 'transparent');
+      grad.addColorStop(.4, 'rgba(255,200,220,1)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x - 30, 0, 60, H);
+    }
+    ctx.restore();
+  }
+
+  function drawLayer9(ctx) {
+    // Depth vignette
+    const grad = ctx.createRadialGradient(W/2,H/2,H*.2, W/2,H/2,Math.max(W,H)*.7);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(1, 'rgba(18,0,13,.6)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function loop() {
+    time++;
+    ctx.clearRect(0,0,W,H);
+    drawLayer1(ctx);
+    drawLayer2(ctx);
+    drawLayer3(ctx);
+    drawLayer4(ctx);
+    drawLayer5(ctx);
+    drawLayer6(ctx);
+    drawLayer7(ctx);
+    drawLayer8(ctx);
+    drawLayer9(ctx);
+    // Small twinkling stars
+    if (time % 3 === 0) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,240,250,.7)';
+      const sx = Math.random() * W;
+      const sy = Math.random() * H * .6;
+      ctx.globalAlpha = Math.random() * .4;
+      ctx.beginPath(); ctx.arc(sx, sy, .5 + Math.random(), 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', resize);
+  document.addEventListener('mousemove', e => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    const glow = document.getElementById('mouseGlow');
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+  document.addEventListener('touchmove', e => {
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+  }, {passive:true});
+
+  resize();
+  loop();
+})();
+
+/* ============================================================
+   SCENE MANAGER
+   ============================================================ */
+const scenes = {};
+function getScene(id) {
+  if (!scenes[id]) scenes[id] = document.getElementById(id);
+  return scenes[id];
+}
+
+function goTo(id, delay = 0) {
+  setTimeout(() => {
+    document.querySelectorAll('.scene.active').forEach(s => {
+      s.classList.remove('active');
+      s.style.pointerEvents = 'none';
+    });
+    const el = getScene(id);
+    if (el) {
+      el.classList.add('active');
+      el.style.pointerEvents = 'all';
+    }
+  }, delay);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function launchConfetti(count = 60) {
+  const overlay = document.getElementById('celebrationOverlay');
+  const colors = ['#ff5fa2','#ffd6ea','#fff3f8','#ff85b8','#ffcc00','#a855f7'];
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.width = (6 + Math.random() * 8) + 'px';
+    c.style.height = (6 + Math.random() * 8) + 'px';
+    c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    c.style.animationDelay = Math.random() * .5 + 's';
+    overlay.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+
+/* ============================================================
+   SCENE 0: PASSWORD GATE
+   ============================================================ */
+let pwInput = '';
+const PASSWORD = '2007';
+
+document.getElementById('numpad').addEventListener('click', e => {
+  const btn = e.target.closest('.num-btn');
+  if (!btn) return;
+  const n = btn.dataset.n;
+  if (n === 'del') {
+    pwInput = pwInput.slice(0,-1);
+  } else if (n === 'ok') {
+    checkPassword();
+    return;
+  } else {
+    if (pwInput.length < 4) pwInput += n;
+  }
+  updateDots();
+  if (pwInput.length === 4) setTimeout(checkPassword, 200);
+});
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('d' + i).classList.toggle('filled', i < pwInput.length);
+  }
+}
+
+function checkPassword() {
+  if (pwInput === PASSWORD) {
+    // Correct: cinematic unlock
+    const card = document.querySelector('.glass-card');
+    card.style.transition = 'all 1.2s cubic-bezier(.25,.46,.45,.94)';
+    card.style.transform = 'scale(1.05)';
+    card.style.boxShadow = '0 0 200px rgba(255,95,162,.8)';
+    card.style.opacity = '0';
+    showToast('✨ Welcome, Monisha!');
+    setTimeout(() => goTo('scene-darkroom'), 1200);
+  } else {
+    // Wrong: shake
+    const card = document.querySelector('.glass-card');
+    card.classList.add('shake');
+    document.getElementById('pwError').textContent = '✗ Incorrect code, try again';
+    setTimeout(() => {
+      card.classList.remove('shake');
+      document.getElementById('pwError').textContent = '';
+    }, 500);
+    pwInput = '';
+    updateDots();
+  }
+}
+
+/* ============================================================
+   SCENE 1: DARK ROOM / LIGHT SWITCH
+   ============================================================ */
+document.getElementById('switchBtn').addEventListener('click', startLightSequence);
+
+function startLightSequence() {
+  document.getElementById('switchBtn').style.display = 'none';
+  const darkRoom = getScene('scene-darkroom');
+
+  // Gradual light stages
+  const stages = [
+    { bg: 'radial-gradient(ellipse at 20% 20%, rgba(255,200,150,.06) 0%, #000 60%)', delay: 0 },
+    { bg: 'radial-gradient(ellipse at 80% 20%, rgba(255,200,150,.08) 0%, #000 60%)', delay: 400 },
+    { bg: 'radial-gradient(ellipse at 50% 0%, rgba(255,220,180,.12) 0%, rgba(30,5,25,.9) 60%)', delay: 800 },
+    { bg: 'radial-gradient(ellipse at 30% 70%, rgba(255,150,100,.08) 0%, rgba(30,5,25,.7) 50%)', delay: 1200 },
+    { bg: 'radial-gradient(ellipse at 50% 40%, rgba(255,180,120,.15) 0%, rgba(40,0,24,.8) 70%)', delay: 1600 }
+  ];
+
+  stages.forEach(s => {
+    setTimeout(() => { darkRoom.style.background = s.bg; darkRoom.style.transition = 'background .6s ease'; }, s.delay);
+  });
+
+  // After lights come on, transition to birthday room
+  setTimeout(() => {
+    goTo('scene-room');
+    buildRoomDecorations();
+    setTimeout(() => {
+      const btn = document.getElementById('toBalloonsBtn');
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'all';
+    }, 5500);
+  }, 2400);
+}
+
+/* ============================================================
+   SCENE 3: BIRTHDAY ROOM
+   ============================================================ */
+function buildRoomDecorations() {
+  const room = document.getElementById('roomScene');
+  // Clear existing except window
+  Array.from(room.children).forEach(c => {
+    if (!c.classList.contains('room-window')) c.remove();
+  });
+
+  // Fairy light strings
+  const flColors = ['#ff5fa2','#ffd6ea','#ffcc80','#ce93d8','#80deea','#fff176'];
+  for (let s = 0; s < 2; s++) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.style.cssText = `position:absolute;top:0;${s===0?'left:0':'right:0'};width:50%;height:120px;overflow:visible;`;
+    svg.setAttribute('viewBox','0 0 400 120');
+    // Wire
+    const wire = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const d = s===0 ? 'M0,20 Q100,60 200,30 Q300,0 400,40' : 'M400,20 Q300,60 200,30 Q100,0 0,40';
+    wire.setAttribute('d', d);
+    wire.setAttribute('stroke','rgba(80,40,30,.4)');
+    wire.setAttribute('stroke-width','1.5');
+    wire.setAttribute('fill','none');
+    svg.appendChild(wire);
+    // Bulbs
+    for (let i = 0; i < 10; i++) {
+      const t = i / 9;
+      const x = s===0 ? t * 400 : 400 - t * 400;
+      const y = 40 + Math.sin((s===0?t*Math.PI:Math.PI-t*Math.PI)) * 20;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx', x); circle.setAttribute('cy', y + 8);
+      circle.setAttribute('r', '5');
+      circle.setAttribute('fill', flColors[i % flColors.length]);
+      circle.style.animation = `fl-flicker ${.8 + Math.random()*.8}s ease-in-out infinite`;
+      circle.style.animationDelay = Math.random() * 1 + 's';
+      svg.appendChild(circle);
+    }
+    room.appendChild(svg);
+  }
+
+  // Balloons
+  const bColors = ['🎈','🎈','🎀'];
+  const bEmojis = ['🩷','💜','🩵','🤍','💛','🩷'];
+  [15,20,70,75,82].forEach((x, i) => {
+    const b = document.createElement('div');
+    b.className = 'room-balloon';
+    b.style.left = x + '%';
+    b.style.animationDuration = (6 + i * .7) + 's';
+    b.style.fontSize = (2 + (i % 3) * .5) + 'rem';
+    b.style.animationDelay = (i * .3) + 's';
+    b.textContent = bEmojis[i % bEmojis.length];
+    room.appendChild(b);
+  });
+
+  // Candles
+  ['30%','65%','80%'].forEach((x, i) => {
+    const c = document.createElement('div');
+    c.style.cssText = `position:absolute;bottom:8%;left:${x};font-size:${1.5 + i * .3}rem;filter:drop-shadow(0 0 6px rgba(255,200,80,.5));`;
+    c.textContent = '🕯️';
+    room.appendChild(c);
+  });
+
+  // Roses
+  ['10%','45%','88%'].forEach(x => {
+    const r = document.createElement('div');
+    r.style.cssText = `position:absolute;bottom:6%;left:${x};font-size:1.8rem;`;
+    r.textContent = '🌹';
+    room.appendChild(r);
+  });
+
+  // Gift boxes
+  ['5%','55%'].forEach(x => {
+    const g = document.createElement('div');
+    g.style.cssText = `position:absolute;bottom:5%;left:${x};font-size:2.2rem;`;
+    g.textContent = '🎁';
+    room.appendChild(g);
+  });
+}
+
+document.getElementById('toBalloonsBtn').addEventListener('click', () => {
+  goTo('scene-balloons');
+  launchBalloons();
+});
+
+/* ============================================================
+   SCENE 4: BALLOON RELEASE
+   ============================================================ */
+function launchBalloons() {
+  const canvas = document.getElementById('balloonCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const W = canvas.width, H = canvas.height;
+
+  const emojis = ['🩷','💜','🩵','🤍','💛','❤️','🎈','💖','🎀','💗'];
+  const balloons = Array.from({length:18}, (_,i) => ({
+    x: 10 + Math.random() * (W - 20),
+    y: H + 50 + Math.random() * 100,
+    speed: .5 + Math.random() * 1.2,
+    size: 24 + Math.random() * 24,
+    emoji: emojis[i % emojis.length],
+    drift: (Math.random() - .5) * .5,
+    sway: 0,
+    swaySpeed: .01 + Math.random() * .02,
+    opacity: 0
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    frame++;
+    let allGone = true;
+    balloons.forEach(b => {
+      b.y -= b.speed;
+      b.x += Math.sin(b.sway) * 0.8;
+      b.sway += b.swaySpeed;
+      if (b.y < H + 60) b.opacity = Math.min(1, b.opacity + .02);
+      if (b.y > -80) allGone = false;
+      ctx.save();
+      ctx.globalAlpha = b.opacity;
+      ctx.font = b.size + 'px serif';
+      ctx.fillText(b.emoji, b.x, b.y);
+      ctx.restore();
+    });
+    if (!allGone) requestAnimationFrame(draw);
+    else setTimeout(() => {
+         buildWishes();
+         goTo('scene-wishes');
+    }, 400);
+  }
+  draw();
+  setTimeout(() => goTo('scene-wishes'), 4500);
+}
+
+/* ============================================================
+   SCENE 5: WISH WALL
+   ============================================================ */
+const wishes = [
+  { from: '🌸 Your Favourite Sibling', text: 'You\'ve bossed me around since I was born, and somehow I wouldn\'t have it any other way. Happy Birthday, didi — keep being you! 🌸' },
+  { from: '💖 The Stars', text: 'Every star in the sky was placed there just to celebrate you. You\'re one of a kind, didi, and everyone who knows you is lucky for it! 💫' },
+  { from: '🌙 The Moon', text: 'On this special night, the moon shines extra bright — just for you. May this new year bring you everything you deserve, didi. 🌙' },
+  { from: '🌹 The Garden', text: 'Every rose that blooms today blooms for you. May your year ahead be as bright as your laugh and as strong as your patience with me. 🌹' },
+  { from: '✨ The Universe', text: 'Today the universe celebrates the day you arrived — and trust me, the world\'s been better with you in it ever since. Never stop shining, didi! ✨' },
+  { from: '🎶 A Melody', text: 'If our family is a song, you\'re the part that holds it all together. Happy Birthday — may every day ahead feel like your favourite tune! 🎶' }
+];
+
+function buildWishes() {
+  const grid = document.getElementById('envelopesGrid');
+  grid.innerHTML = '';
+  wishes.forEach((w, i) => {
+    const env = document.createElement('div');
+    env.className = 'envelope';
+    env.innerHTML = `<div class="env-body">
+      <div class="env-flap"></div>
+      <div class="env-seal">💌</div>
+    </div>`;
+    env.addEventListener('click', () => {
+      env.classList.add('open');
+      document.getElementById('wishTitle').textContent = w.from;
+      document.getElementById('wishText').textContent = w.text;
+      document.getElementById('wishModal').classList.add('visible');
+    });
+    grid.appendChild(env);
+  });
+}
+buildWishes();
+
+document.getElementById('wishClose').addEventListener('click', () => {
+  document.getElementById('wishModal').classList.remove('visible');
+});
+document.getElementById('wishModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('wishModal'))
+    document.getElementById('wishModal').classList.remove('visible');
+});
+
+document.getElementById('toSceneCake').addEventListener('click', () => goTo('scene-cake'));
+
+/* ============================================================
+   SCENE 6: CAKE
+   ============================================================ */
+let candlesBlow = 0;
+document.getElementById('blowBtn').addEventListener('click', () => {
+  if (candlesBlow >= 3) return;
+  candlesBlow++;
+  const flame = document.getElementById('flame' + candlesBlow);
+  if (flame) flame.classList.add('blown');
+  // Smoke particles
+  const cakeEl = document.getElementById('cakeContainer');
+  for (let i = 0; i < 5; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'smoke-particle';
+    sp.style.left = (45 + candlesBlow * 15) + '%';
+    sp.style.top = '30%';
+    sp.style.setProperty('--dx', (Math.random()-0.5)*40+'px');
+    cakeEl.appendChild(sp);
+    setTimeout(() => sp.remove(), 1500);
+  }
+  if (candlesBlow === 3) {
+    document.getElementById('blowBtn').disabled = true;
+    document.getElementById('cakeInstruction').textContent = '🎉 Wish granted! All candles are out!';
+    launchConfetti();
+    showToast('🎂 Happy Birthday Monisha! 🎂');
+    setTimeout(() => {
+      document.getElementById('toGiftBtn').style.display = 'inline-block';
+    }, 1500);
+  } else {
+    document.getElementById('cakeInstruction').textContent = `✨ ${3-candlesBlow} candle${3-candlesBlow>1?'s':''} left! Keep going!`;
+  }
+});
+
+document.getElementById('toGiftBtn').addEventListener('click', () => goTo('scene-gift'));
+
+/* ============================================================
+   SCENE 7: GIFT
+   ============================================================ */
+let giftOpened = false;
+document.getElementById('giftWrapper').addEventListener('click', () => {
+  if (giftOpened) return;
+  giftOpened = true;
+  document.getElementById('giftInstruction').textContent = '✨ Opening...';
+  // Animate SVG bow and lid
+  const lid = document.getElementById('giftLid');
+  const bow = document.getElementById('giftBow');
+  const ribbon = document.getElementById('giftLidRibbon');
+  if (lid) {
+    lid.style.transition = 'transform 1s ease';
+    lid.style.transform = 'translateY(-60px)';
+    lid.style.opacity = '0';
+  }
+  if (bow) { bow.style.transition = 'transform 1s ease'; bow.style.transform = 'translateY(-80px)'; bow.style.opacity = '0'; }
+  if (ribbon) { ribbon.style.transition = 'opacity .5s'; ribbon.style.opacity = '0'; }
+  launchConfetti(40);
+  setTimeout(() => {
+    document.getElementById('giftReveal').classList.add('visible');
+  }, 900);
+});
+
+document.getElementById('giftCloseBtn').addEventListener('click', () => {
+  document.getElementById('giftReveal').classList.remove('visible');
+  goTo('scene-gallery');
+  buildGallery();
+});
+
+/* ============================================================
+   SCENE 8: MEMORY GALLERY
+   ============================================================ */
+const memories = [
+  { emoji: '🌸', caption: 'A morning that felt like home — remember this feeling always.' },
+  { emoji: '✨', caption: 'Moments like this are why I never get tired of being your sibling.' },
+  { emoji: '🌹', caption: 'Every rose holds a secret. This one holds your stubbornness and your smile, equally.' },
+  { emoji: '💖', caption: 'The day you taught me something I never forgot.' },
+  { emoji: '🦋', caption: 'Beautiful things happen to beautiful souls — and you\'ve got the best one I know.' },
+  { emoji: '🌙', caption: 'Late-night talks and silly arguments — always one of my favourite memories.' },
+  { emoji: '🎶', caption: 'Our home plays its best music when you\'re around, didi.' },
+  { emoji: '🌟', caption: 'A sibling like you doesn\'t come around twice — lucky me.' }
+];
+
+function buildGallery() {
+  const wall = document.getElementById('memoryWall');
+  wall.innerHTML = '';
+  const rots = [-4,-2,3,-3,2,-1,4,-2];
+  memories.forEach((m, i) => {
+    const p = document.createElement('div');
+    p.className = 'polaroid';
+    p.style.setProperty('--rot', rots[i%rots.length] + 'deg');
+    p.innerHTML = `<div class="polaroid-img">${m.emoji}</div><div class="polaroid-caption">Memory ${i+1}</div>`;
+    p.addEventListener('click', () => {
+      document.getElementById('photoModalImg').textContent = m.emoji;
+      document.getElementById('photoModalImg').style.fontSize = '5rem';
+      document.getElementById('photoModalCaption').textContent = m.caption;
+      document.getElementById('photoModal').classList.add('visible');
+    });
+    wall.appendChild(p);
+  });
+}
+buildGallery();
+
+document.getElementById('photoClose').addEventListener('click', () => {
+  document.getElementById('photoModal').classList.remove('visible');
+});
+
+document.getElementById('toPortalBtn').addEventListener('click', () => {
+  goTo('scene-album');
+  buildAlbum();
+});
+
+/* ============================================================
+   SCENE 8.5: PHOTO ALBUM
+   A flip-book style album. Each page tries to load a real photo
+   from src="S1.jpg", "S2.jpg", "S3.jpg"... placed next to this
+   HTML file. If a photo is missing, a generated romantic
+   placeholder (same safe pattern as the puzzle game) is used
+   instead, so the album never breaks or shows a broken image icon.
+   ============================================================ */
+const albumPages = [
+  { src: 'S1.jpg', caption: 'Every story has a beginning — and I\'m so glad mine has you in it as my didi. 💖' },
+  { src: 'S2.jpg', caption: 'That smile of yours could fix even my worst days.' },
+  { src: 'S3.jpg', caption: 'A moment I\'ll keep teasing you about for years to come.' },
+  { src: 'S4.jpg', caption: 'Laughter looks so good on you — and yes, half the time I caused it.' },
+  { src: 'S5.jpg', caption: 'Some memories just feel like home — this is one of them.' },
+  { src: 'S6.jpg', caption: 'You make ordinary days feel like something worth remembering.' },
+  { src: 'S7.jpg', caption: 'Forever grateful you\'re the didi I got stuck with — best deal of my life.' },
+  { src: 'S8.jpg', caption: 'And the best memories with you? Still being made. ✨' }
+];
+
+const albumImageCache = {};   // src -> resolved <img src> or placeholder data-URL
+const albumImageLoading = {}; // src -> in-flight promise
+
+function makeAlbumPlaceholderImage(label) {
+  const c = document.createElement('canvas');
+  c.width = 480; c.height = 480;
+  const ctx = c.getContext('2d');
+
+  const grad = ctx.createRadialGradient(240, 180, 20, 240, 240, 340);
+  grad.addColorStop(0, '#ff9ec7');
+  grad.addColorStop(0.5, '#ff5fa2');
+  grad.addColorStop(1, '#5c1145');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 480, 480);
+
+  ctx.globalAlpha = 0.16;
+  ctx.fillStyle = '#ffffff';
+  for (let i = 0; i < 8; i++) {
+    const x = Math.random() * 480, y = Math.random() * 480, r = 20 + Math.random() * 60;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = 'rgba(255,255,255,.92)';
+  ctx.font = '700 60px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,.35)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('💖', 240, 200);
+  ctx.font = 'italic 32px Georgia, serif';
+  ctx.fillText(label, 240, 280);
+  ctx.shadowBlur = 0;
+
+  return c.toDataURL('image/png');
+}
+
+function loadAlbumImage(src, label) {
+  if (albumImageCache[src]) return Promise.resolve(albumImageCache[src]);
+  if (albumImageLoading[src]) return albumImageLoading[src];
+
+  albumImageLoading[src] = new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      albumImageCache[src] = src;
+      delete albumImageLoading[src];
+      resolve(src);
+    };
+    img.onerror = () => {
+      const placeholder = makeAlbumPlaceholderImage(label);
+      albumImageCache[src] = placeholder;
+      delete albumImageLoading[src];
+      resolve(placeholder);
+    };
+    img.src = src;
+  });
+
+  return albumImageLoading[src];
+}
+
+let albumCurrentIndex = 0;
+let albumFlipping = false;
+let albumSwipeStartX = null;
+
+function buildAlbum() {
+  const book = document.getElementById('albumBook');
+  const dotsWrap = document.getElementById('albumDots');
+  const finale = document.getElementById('albumFinale');
+  const prevBtn = document.getElementById('albumPrevBtn');
+  const nextBtn = document.getElementById('albumNextBtn');
+
+  book.innerHTML = '';
+  dotsWrap.innerHTML = '';
+  finale.classList.remove('visible');
+  albumCurrentIndex = 0;
+  albumFlipping = false;
+
+  const rotSeeds = [-2, 1.5, -1, 2, -1.5, 1, -2.5, 1.5];
+
+  albumPages.forEach((p, i) => {
+    const page = document.createElement('div');
+    page.className = 'album-page ' + (i === 0 ? 'state-current' : 'state-stack');
+    page.dataset.idx = i;
+
+    const polaroid = document.createElement('div');
+    polaroid.className = 'album-polaroid';
+    polaroid.style.setProperty('--prot', rotSeeds[i % rotSeeds.length] + 'deg');
+
+    const frame = document.createElement('div');
+    frame.className = 'album-photo-frame';
+    frame.innerHTML = `<span style="font-size:2.4rem;opacity:.6">💗</span>`;
+    polaroid.appendChild(frame);
+
+    const pageNum = document.createElement('div');
+    pageNum.className = 'album-page-number';
+    pageNum.textContent = `Page ${i + 1} / ${albumPages.length}`;
+
+    const caption = document.createElement('div');
+    caption.className = 'album-caption';
+    caption.textContent = p.caption;
+
+    page.appendChild(polaroid);
+    page.appendChild(pageNum);
+    page.appendChild(caption);
+    book.appendChild(page);
+
+    loadAlbumImage(p.src, `Monisha — ${i + 1}`).then((resolvedSrc) => {
+      frame.innerHTML = `<img src="${resolvedSrc}" alt="${p.caption.replace(/"/g, '')}" />`;
+    });
+
+    const dot = document.createElement('button');
+    dot.className = 'album-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to page ' + (i + 1));
+    dot.addEventListener('click', () => goToAlbumPage(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  updateAlbumNavState();
+
+  const stage = document.getElementById('albumStage');
+  function onTouchStart(e) { albumSwipeStartX = e.touches[0].clientX; }
+  function onTouchEnd(e) {
+    if (albumSwipeStartX === null) return;
+    const dx = e.changedTouches[0].clientX - albumSwipeStartX;
+    albumSwipeStartX = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) albumNext(); else albumPrev();
+  }
+  stage.addEventListener('touchstart', onTouchStart, { passive: true });
+  stage.addEventListener('touchend', onTouchEnd, { passive: true });
+
+  function onPrevClick() { albumPrev(); }
+  function onNextClick() { albumNext(); }
+  prevBtn.addEventListener('click', onPrevClick);
+  nextBtn.addEventListener('click', onNextClick);
+
+  gameCleanup['album'] = () => {
+    stage.removeEventListener('touchstart', onTouchStart);
+    stage.removeEventListener('touchend', onTouchEnd);
+    prevBtn.removeEventListener('click', onPrevClick);
+    nextBtn.removeEventListener('click', onNextClick);
+  };
+}
+
+function updateAlbumNavState() {
+  const prevBtn = document.getElementById('albumPrevBtn');
+  const nextBtn = document.getElementById('albumNextBtn');
+  const dots = document.querySelectorAll('.album-dot');
+  const finale = document.getElementById('albumFinale');
+  const isLast = albumCurrentIndex === albumPages.length - 1;
+
+  prevBtn.disabled = albumCurrentIndex === 0;
+  nextBtn.disabled = isLast;
+
+  dots.forEach((d, i) => d.classList.toggle('active', i === albumCurrentIndex));
+
+  if (isLast) {
+    finale.classList.add('visible');
+    launchConfetti(35);
+  } else {
+    finale.classList.remove('visible');
+  }
+}
+
+function flipAlbumTo(targetIndex, direction) {
+  if (albumFlipping || targetIndex < 0 || targetIndex >= albumPages.length || targetIndex === albumCurrentIndex) return;
+  albumFlipping = true;
+
+  const pages = document.querySelectorAll('.album-page');
+  const currentPage = pages[albumCurrentIndex];
+  const targetPage = pages[targetIndex];
+
+  // Reset all pages to a neutral stacked state first
+  pages.forEach((pg, i) => {
+    pg.classList.remove('state-current', 'state-next', 'state-prev', 'state-stack', 'flipping-out', 'flipping-in');
+    if (i !== albumCurrentIndex && i !== targetIndex) pg.classList.add('state-stack');
+  });
+
+  if (direction === 'next') {
+    currentPage.classList.add('flipping-out');
+    targetPage.classList.add('state-current');
+    targetPage.style.zIndex = '4';
+  } else {
+    targetPage.classList.add('flipping-in');
+    currentPage.classList.add('state-stack');
+  }
+
+  albumCurrentIndex = targetIndex;
+  updateAlbumNavState();
+
+  const t = setTimeout(() => {
+    document.querySelectorAll('.album-page').forEach((pg, i) => {
+      pg.classList.remove('flipping-out', 'flipping-in', 'state-next', 'state-prev');
+      pg.style.zIndex = '';
+      pg.classList.toggle('state-current', i === albumCurrentIndex);
+      pg.classList.toggle('state-stack', i !== albumCurrentIndex);
+    });
+    albumFlipping = false;
+  }, 850);
+  cleanupAlbumTimeouts.push(t);
+}
+const cleanupAlbumTimeouts = [];
+
+function albumNext() { flipAlbumTo(albumCurrentIndex + 1, 'next'); }
+function albumPrev() { flipAlbumTo(albumCurrentIndex - 1, 'prev'); }
+function goToAlbumPage(i) { flipAlbumTo(i, i > albumCurrentIndex ? 'next' : 'prev'); }
+
+document.getElementById('toPortalFromAlbumBtn').addEventListener('click', () => {
+  goTo('scene-portal');
+});
+
+/* ============================================================
+   SCENE 9: GAME PORTAL
+   ============================================================ */
+document.getElementById('portalDoor').addEventListener('click', () => {
+  const door = document.getElementById('portalDoor');
+  door.querySelector('.door-panel').style.transform = 'perspective(600px) rotateY(-100deg)';
+  door.querySelector('.door-panel').style.opacity = '0';
+  setTimeout(() => {
+    goTo('scene-games');
+    buildGames();
+  }, 900);
+});
+
+/* ============================================================
+   SCENE 10-11: GAME WORLD + REWARD SYSTEM
+   ============================================================ */
+const gameDefs = [
+  { id:1, name:'Butterfly Garden',     icon:'🦋', reward:'🌹' },
+  { id:2, name:'Memory Match',         icon:'🧠', reward:'⭐' },
+  { id:3, name:'Hidden Gift Hunt',     icon:'🎁', reward:'💌' },
+  { id:4, name:'Star Catcher',         icon:'🌟', reward:'🎁' },
+  { id:5, name:'Cupid Arrow',          icon:'🎯', reward:'💎' },
+  { id:6, name:'Lucky Birthday Wheel', icon:'🎡', reward:'🎂' },
+  { id:7, name:'Butterfly Rescue',     icon:'🐰', reward:'🔮' }
+];
+
+let gameCompleted = new Set();
+let gamePlayed = new Set(); // tracks which games the player has opened — shown as a soft hint only
+
+function buildGames() {
+  const grid = document.getElementById('gamesGrid');
+  const tracker = document.getElementById('rewardTracker');
+  grid.innerHTML = tracker.innerHTML = '';
+
+  gameDefs.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'game-card' + (gameCompleted.has(g.id) ? ' completed' : '');
+    card.id = 'gameCard' + g.id;
+    card.innerHTML = `<div class="game-icon">${g.icon}</div>
+      <div class="game-name">${g.name}</div>
+      <div class="game-status">${gameCompleted.has(g.id) ? '✓ Completed' : 'Play'}</div>`;
+    card.addEventListener('click', () => launchGame(g.id));
+    grid.appendChild(card);
+
+    const slot = document.createElement('div');
+    slot.className = 'reward-slot' + (gameCompleted.has(g.id) ? ' earned' : '');
+    slot.id = 'reward' + g.id;
+    slot.textContent = g.reward;
+    tracker.appendChild(slot);
+  });
+}
+
+function markGameComplete(id) {
+  if (gameCompleted.has(id)) return;
+  gameCompleted.add(id);
+  const reward = gameDefs.find(g=>g.id===id).reward;
+  showToast('🎉 Reward earned: ' + reward);
+  launchConfetti(30);
+  // Update UI
+  const card = document.getElementById('gameCard' + id);
+  if (card) { card.classList.add('completed'); card.querySelector('.game-status').textContent = '✓ Completed'; }
+  const slot = document.getElementById('reward' + id);
+  if (slot) slot.classList.add('earned');
+}
+
+/* The "Continue to Secret Room" button is ALWAYS clickable — the
+   player decides for themselves whether to keep playing or move on.
+   Nothing is forced and no popup interrupts them; playing every game
+   (or even just one) is entirely optional. */
+document.getElementById('toSecretBtn').addEventListener('click', () => {
+  goTo('scene-secret');
+  buildSecretRoom();
+});
+
+/* ============================================================
+   GAME LAUNCHERS
+   ============================================================ */
+function launchGame(id) {
+  const modal = document.getElementById('gameModal' + id);
+  if (modal) {
+    modal.classList.add('visible');
+    initGame(id);
+    gamePlayed.add(id);
+  }
+}
+
+// Close buttons
+[1,2,3,4,5,6,7].forEach(id => {
+  const btn = document.getElementById('closeGame' + id);
+  if (btn) btn.addEventListener('click', () => {
+    document.getElementById('gameModal' + id).classList.remove('visible');
+    stopGame(id);
+  });
+});
+
+/* ------------------------------------------------------------
+   GAME LIFECYCLE MANAGER
+   gameLoops[id]   -> active requestAnimationFrame handle
+   gameCleanup[id] -> function() that removes listeners/intervals
+                       registered by that game's current run
+   ------------------------------------------------------------ */
+let gameLoops = {};
+let gameCleanup = {};
+
+function stopGame(id) {
+  if (gameLoops[id]) { cancelAnimationFrame(gameLoops[id]); delete gameLoops[id]; }
+  if (gameCleanup[id]) { gameCleanup[id](); delete gameCleanup[id]; }
+}
+
+function initGame(id) {
+  stopGame(id);
+  switch(id) {
+    case 1: initButterflyGarden();  break;
+    case 2: initMemoryMatch();      break;
+    case 3: initGiftHunt();         break;
+    case 4: initStarCatcher();      break;
+    case 5: initCupidArrow();       break;
+    case 6: initLuckyWheel();       break;
+    case 7: initButterflyRescue();  break;
+  }
+}
+
+/* Shared helper: size a game canvas to its CSS box using devicePixelRatio,
+   and keep it correctly scaled if the modal is open during a resize/rotate. */
+function setupGameCanvas(canvas, cssWidth, cssHeight) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.style.width = cssWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+  canvas.width = Math.round(cssWidth * dpr);
+  canvas.height = Math.round(cssHeight * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, W: cssWidth, H: cssHeight };
+}
+
+function gameCanvasSize(canvas, fallbackW, fallbackH) {
+  const w = canvas.clientWidth || canvas.parentElement.clientWidth || fallbackW;
+  return { w: Math.min(w, fallbackW), h: fallbackH };
+}
+
+/* ------ GAME 1: Butterfly Garden (MAIN GAME) ------
+   Glowing butterflies flutter smoothly across the canvas in a gentle
+   left-to-right drifting flight path with vertical bob/wave motion.
+   Tap/click a butterfly to catch it. Catching 15 butterflies wins. */
+function initButterflyGarden() {
+  const canvasEl = document.getElementById('butterflyCanvas');
+  const size = gameCanvasSize(canvasEl, 300, 250);
+  const { ctx, W, H } = setupGameCanvas(canvasEl, size.w, size.h);
+
+  const GOAL = 15;
+  let score = 0;
+  let running = true;
+  let butterflies = [];
+  let spawnTimer = 0;
+  let lastTime = 0;
+
+  const palettes = [
+    ['#ff5fa2', '#ffd6ea'],
+    ['#a855f7', '#e9d5ff'],
+    ['#60cdff', '#d6f3ff'],
+    ['#ffd84d', '#fff3c4'],
+    ['#ff85b8', '#fff0f6']
+  ];
+
+  function spawnButterfly() {
+    const fromLeft = Math.random() < 0.5;
+    const colors = palettes[Math.floor(Math.random() * palettes.length)];
+    butterflies.push({
+      x: fromLeft ? -24 : W + 24,
+      baseY: 30 + Math.random() * (H - 60),
+      y: 0,
+      dir: fromLeft ? 1 : -1,
+      speed: 0.6 + Math.random() * 0.7,
+      size: 12 + Math.random() * 7,
+      wingPhase: Math.random() * Math.PI * 2,
+      wingSpeed: 0.18 + Math.random() * 0.08,
+      bobPhase: Math.random() * Math.PI * 2,
+      bobAmp: 14 + Math.random() * 16,
+      colorA: colors[0],
+      colorB: colors[1],
+      caught: false,
+      caughtT: 0
+    });
+  }
+  spawnButterfly();
+
+  function drawButterfly(b) {
+    b.y = b.baseY + Math.sin(b.bobPhase) * b.bobAmp;
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.rotate(b.dir === 1 ? 0 : Math.PI);
+
+    if (b.caught) {
+      const t = b.caughtT / 18;
+      ctx.globalAlpha = Math.max(0, 1 - t);
+      const sc = 1 + t * 0.6;
+      ctx.scale(sc, sc);
+    }
+
+    const flap = Math.sin(b.wingPhase) * 0.9; // wing flap amount
+    const s = b.size;
+
+    ctx.shadowColor = b.colorA;
+    ctx.shadowBlur = 14;
+
+    // Left wing
+    ctx.save();
+    ctx.scale(1 - Math.abs(flap) * 0.35, 1);
+    ctx.fillStyle = b.colorA;
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.6, -s * 0.3, s * 0.7, s * 0.55, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = b.colorB;
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.5, s * 0.25, s * 0.45, s * 0.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Right wing
+    ctx.save();
+    ctx.scale(1 - Math.abs(flap) * 0.35, 1);
+    ctx.fillStyle = b.colorA;
+    ctx.beginPath();
+    ctx.ellipse(s * 0.6, -s * 0.3, s * 0.7, s * 0.55, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = b.colorB;
+    ctx.beginPath();
+    ctx.ellipse(s * 0.5, s * 0.25, s * 0.45, s * 0.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Body
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = '#3a1030';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, s * 0.1, s * 0.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function handleTap(clientX, clientY) {
+    if (!running) return;
+    const rect = canvasEl.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    for (let i = butterflies.length - 1; i >= 0; i--) {
+      const b = butterflies[i];
+      if (!b.caught && Math.hypot(x - b.x, y - b.y) < b.size * 1.8) {
+        b.caught = true;
+        score++;
+        const scoreEl = document.getElementById('butterflyScore');
+        if (scoreEl) scoreEl.textContent = score;
+        if (score >= GOAL) {
+          running = false;
+          markGameComplete(1);
+          showToast('🦋 Butterfly Garden Complete!');
+        }
+        break;
+      }
+    }
+  }
+
+  function onClick(e) { handleTap(e.clientX, e.clientY); }
+  function onTouch(e) {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    handleTap(t.clientX, t.clientY);
+  }
+  canvasEl.addEventListener('click', onClick);
+  canvasEl.addEventListener('touchstart', onTouch, { passive: false });
+
+  function loop(ts) {
+    if (!lastTime) lastTime = ts;
+    const dt = ts - lastTime;
+    lastTime = ts;
+
+    spawnTimer += dt;
+    if (spawnTimer > 900 && butterflies.filter(b => !b.caught).length < 4) {
+      spawnButterfly();
+      spawnTimer = 0;
+    }
+
+    ctx.clearRect(0, 0, W, H);
+
+    butterflies = butterflies.filter(b => {
+      b.wingPhase += b.wingSpeed;
+      b.bobPhase += 0.04;
+      if (b.caught) {
+        b.caughtT++;
+        drawButterfly(b);
+        return b.caughtT < 18;
+      }
+      b.x += b.speed * b.dir;
+      drawButterfly(b);
+      return b.dir === 1 ? b.x < W + 30 : b.x > -30;
+    });
+
+    if (running) gameLoops[1] = requestAnimationFrame(loop);
+  }
+  gameLoops[1] = requestAnimationFrame(loop);
+
+  gameCleanup[1] = () => {
+    running = false;
+    canvasEl.removeEventListener('click', onClick);
+    canvasEl.removeEventListener('touchstart', onTouch);
+  };
+}
+
+/* ------ GAME 2: Memory Match ------
+   Classic pair-matching with 8 emoji pairs (16 cards, 4x4 grid).
+   Max 15 attempts (one attempt = one pair flipped, match or not).
+   Finding all 8 pairs = SUCCESS. Running out of attempts = FAIL,
+   grid locks and a "Try Again" button restarts the same game. */
+function initMemoryMatch() {
+  const grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  const messageEl = document.getElementById('memMessage');
+  const tryAgainBtn = document.getElementById('memTryAgainBtn');
+  if (messageEl) { messageEl.textContent = ''; messageEl.className = 'hunt-message'; }
+  if (tryAgainBtn) tryAgainBtn.classList.remove('visible');
+
+  const MAX_TRIES = 15;
+  const emojis = ['🌸','💖','🌹','✨','🦋','🌙','⭐','🎀'];
+  let cards = [...emojis, ...emojis]
+    .sort(() => Math.random() - 0.5)
+    .map((e, i) => ({ id: i, emoji: e, flipped: false, matched: false }));
+
+  let first = null, second = null, lock = false, pairs = 0, tries = 0, over = false;
+
+  const cellPx = Math.min(60, Math.floor((window.innerWidth * 0.8 - 40) / 4));
+  grid.style.gridTemplateColumns = `repeat(4, ${cellPx}px)`;
+
+  const timeouts = [];
+  const clickHandlers = [];
+
+  function endGame(won) {
+    over = true;
+    if (messageEl) {
+      messageEl.textContent = won
+        ? '🎉 Perfect memory — all pairs found!'
+        : '💔 Out of attempts — try again!';
+      messageEl.className = 'hunt-message ' + (won ? 'win' : 'lose');
+    }
+    if (won) {
+      markGameComplete(2);
+      showToast('🧠 Perfect memory!');
+    } else {
+      showToast('💨 Out of attempts!');
+      if (tryAgainBtn) tryAgainBtn.classList.add('visible');
+    }
+  }
+
+  cards.forEach(card => {
+    const el = document.createElement('div');
+    el.className = 'mem-card';
+    el.style.width = cellPx + 'px';
+    el.style.height = cellPx + 'px';
+    el.dataset.id = card.id;
+    el.textContent = '❓';
+
+    const handler = () => {
+      if (over || lock || card.flipped || card.matched) return;
+      card.flipped = true;
+      el.classList.add('flipped');
+      el.textContent = card.emoji;
+
+      if (!first) { first = { card, el }; return; }
+
+      second = { card, el };
+      lock = true;
+      tries++;
+      const triesEl = document.getElementById('memTries');
+      if (triesEl) triesEl.textContent = Math.max(0, MAX_TRIES - tries);
+
+      if (first.card.emoji === second.card.emoji) {
+        first.card.matched = second.card.matched = true;
+        first.el.classList.add('matched');
+        second.el.classList.add('matched');
+        pairs++;
+        const pairsEl = document.getElementById('memPairs');
+        if (pairsEl) pairsEl.textContent = pairs;
+        first = second = null;
+        lock = false;
+        if (pairs === 8) { endGame(true); return; }
+      } else {
+        const t = setTimeout(() => {
+          first.card.flipped = false;
+          second.card.flipped = false;
+          first.el.classList.remove('flipped');
+          second.el.classList.remove('flipped');
+          first.el.textContent = '❓';
+          second.el.textContent = '❓';
+          first = second = null;
+          lock = false;
+          if (!over && tries >= MAX_TRIES && pairs < 8) endGame(false);
+        }, 850);
+        timeouts.push(t);
+        return;
+      }
+
+      if (!over && tries >= MAX_TRIES && pairs < 8) endGame(false);
+    };
+
+    el.addEventListener('click', handler);
+    clickHandlers.push({ el, handler });
+    grid.appendChild(el);
+  });
+
+  const pairsEl0 = document.getElementById('memPairs');
+  if (pairsEl0) pairsEl0.textContent = '0';
+  const triesEl0 = document.getElementById('memTries');
+  if (triesEl0) triesEl0.textContent = String(MAX_TRIES);
+
+  function onTryAgain() { initGame(2); }
+  if (tryAgainBtn) tryAgainBtn.addEventListener('click', onTryAgain);
+
+  gameCleanup[2] = () => {
+    timeouts.forEach(clearTimeout);
+    clickHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+    if (tryAgainBtn) tryAgainBtn.removeEventListener('click', onTryAgain);
+  };
+}
+
+/* ------ GAME 3: Hidden Gift Hunt ------
+   5x5 grid, 5 hidden gifts among 25 tiles. Max 15 clicks allowed.
+   Reaching 5 found = SUCCESS. Using all 15 tries without finding
+   all 5 = FAIL (grid locks, "Try Again" restarts the same game). */
+function initGiftHunt() {
+  const grid = document.getElementById('huntGrid');
+  grid.innerHTML = '';
+  const messageEl = document.getElementById('huntMessage');
+  const tryAgainBtn = document.getElementById('huntTryAgainBtn');
+  if (messageEl) { messageEl.textContent = ''; messageEl.className = 'hunt-message'; }
+  if (tryAgainBtn) tryAgainBtn.classList.remove('visible');
+
+  const TOTAL = 25;
+  const GIFTS = 5;
+  const MAX_TRIES = 15;
+  let positions = new Set();
+  while (positions.size < GIFTS) positions.add(Math.floor(Math.random() * TOTAL));
+  let found = 0, tries = 0;
+  let over = false;
+
+  const clickHandlers = [];
+
+  const foundEl0 = document.getElementById('huntFound');
+  const triesEl0 = document.getElementById('huntTries');
+  if (foundEl0) foundEl0.textContent = '0';
+  if (triesEl0) triesEl0.textContent = String(MAX_TRIES);
+
+  function endGame(won) {
+    over = true;
+    if (messageEl) {
+      messageEl.textContent = won
+        ? '🎉 You found every hidden gift!'
+        : '💔 Out of attempts — try again!';
+      messageEl.className = 'hunt-message ' + (won ? 'win' : 'lose');
+    }
+    if (won) {
+      markGameComplete(3);
+      showToast('🎁 All gifts found!');
+    } else {
+      showToast('💨 Out of attempts!');
+      if (tryAgainBtn) tryAgainBtn.classList.add('visible');
+    }
+  }
+
+  for (let i = 0; i < TOTAL; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'hunt-cell';
+    cell.textContent = '🌸';
+
+    const handler = () => {
+      if (over || cell.classList.contains('revealed')) return;
+      cell.classList.add('revealed');
+      tries++;
+      const triesEl = document.getElementById('huntTries');
+      if (triesEl) triesEl.textContent = Math.max(0, MAX_TRIES - tries);
+
+      if (positions.has(i)) {
+        cell.textContent = '🎁';
+        cell.style.background = 'rgba(255,95,162,.25)';
+        cell.style.boxShadow = '0 0 12px var(--glow)';
+        found++;
+        const foundEl = document.getElementById('huntFound');
+        if (foundEl) foundEl.textContent = found;
+        if (found >= GIFTS) { endGame(true); return; }
+      } else {
+        cell.textContent = '';
+        cell.classList.add('empty');
+        cell.style.opacity = '.4';
+      }
+
+      if (!over && tries >= MAX_TRIES && found < GIFTS) {
+        endGame(false);
+      }
+    };
+
+    cell.addEventListener('click', handler);
+    clickHandlers.push({ el: cell, handler });
+    grid.appendChild(cell);
+  }
+
+  function onTryAgain() { initGame(3); }
+  if (tryAgainBtn) tryAgainBtn.addEventListener('click', onTryAgain);
+
+  gameCleanup[3] = () => {
+    clickHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+    if (tryAgainBtn) tryAgainBtn.removeEventListener('click', onTryAgain);
+  };
+}
+
+/* ------ GAME 4: Star Catcher ------
+   Stars fall from the top; tap/click them before they hit the bottom.
+   Catch 20 stars to win. Endless gentle spawn, no fail-state. */
+function initStarCatcher() {
+  const canvasEl = document.getElementById('starCanvas');
+  const size = gameCanvasSize(canvasEl, 300, 250);
+  const { ctx, W, H } = setupGameCanvas(canvasEl, size.w, size.h);
+
+  const GOAL = 20;
+  let score = 0;
+  let running = true;
+  let stars = [];
+  let spawnTimer = 0;
+  let lastTime = 0;
+
+  function spawnStar() {
+    stars.push({
+      x: 20 + Math.random() * (W - 40),
+      y: -20,
+      speed: 1 + Math.random() * 1.3,
+      size: 14 + Math.random() * 10,
+      rot: Math.random() * Math.PI,
+      rotSpeed: (Math.random() - 0.5) * 0.05,
+      caught: false,
+      caughtT: 0
+    });
+  }
+
+  function drawStar(s) {
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.rot);
+    if (s.caught) {
+      ctx.globalAlpha = Math.max(0, 1 - s.caughtT / 15);
+      const sc = 1 + s.caughtT * 0.08;
+      ctx.scale(sc, sc);
+    }
+    ctx.fillStyle = '#ffd84d';
+    ctx.shadowColor = 'rgba(255,216,77,.8)';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    const spikes = 5, outer = s.size, inner = s.size * 0.45;
+    for (let i = 0; i < spikes * 2; i++) {
+      const r = i % 2 === 0 ? outer : inner;
+      const a = (Math.PI / spikes) * i - Math.PI / 2;
+      const px = Math.cos(a) * r, py = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function handleTap(clientX, clientY) {
+    if (!running) return;
+    const rect = canvasEl.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    for (let i = stars.length - 1; i >= 0; i--) {
+      const s = stars[i];
+      if (!s.caught && Math.hypot(x - s.x, y - s.y) < s.size * 1.4) {
+        s.caught = true;
+        score++;
+        const scoreEl = document.getElementById('starScore');
+        if (scoreEl) scoreEl.textContent = score;
+        if (score >= GOAL) {
+          running = false;
+          markGameComplete(4);
+          showToast('🌟 All stars caught!');
+        }
+        break;
+      }
+    }
+  }
+
+  function onClick(e) { handleTap(e.clientX, e.clientY); }
+  function onTouch(e) {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    handleTap(t.clientX, t.clientY);
+  }
+  canvasEl.addEventListener('click', onClick);
+  canvasEl.addEventListener('touchstart', onTouch, { passive: false });
+
+  function loop(ts) {
+    if (!lastTime) lastTime = ts;
+    const dt = ts - lastTime;
+    lastTime = ts;
+
+    spawnTimer += dt;
+    if (spawnTimer > 550) { spawnStar(); spawnTimer = 0; }
+
+    ctx.clearRect(0, 0, W, H);
+
+    stars = stars.filter(s => {
+      if (s.caught) {
+        s.caughtT++;
+        s.rot += s.rotSpeed;
+        drawStar(s);
+        return s.caughtT < 16;
+      }
+      s.y += s.speed;
+      s.rot += s.rotSpeed;
+      drawStar(s);
+      return s.y < H + 30;
+    });
+
+    if (running) gameLoops[4] = requestAnimationFrame(loop);
+  }
+  gameLoops[4] = requestAnimationFrame(loop);
+
+  gameCleanup[4] = () => {
+    running = false;
+    canvasEl.removeEventListener('click', onClick);
+    canvasEl.removeEventListener('touchstart', onTouch);
+  };
+}
+
+/* ------ GAME 5: Cupid Arrow ------
+   A heart target drifts around the canvas; tap/click it to score a hit.
+   10 hits to win. Target gets a brief "hit" flash then repositions. */
+function initCupidArrow() {
+  const canvasEl = document.getElementById('cupidCanvas');
+  const size = gameCanvasSize(canvasEl, 300, 250);
+  const { ctx, W, H } = setupGameCanvas(canvasEl, size.w, size.h);
+
+  const GOAL = 10;
+  let score = 0;
+  let running = true;
+  let lastTime = 0;
+
+  const target = {
+    x: W / 2, y: H / 2,
+    tx: W / 2, ty: H / 2,
+    size: 26,
+    hitT: 0,
+    hit: false,
+    moveTimer: 0
+  };
+
+  function pickNewTarget() {
+    target.tx = 30 + Math.random() * (W - 60);
+    target.ty = 30 + Math.random() * (H - 60);
+  }
+  pickNewTarget();
+
+  function drawHeartShape(cx, cy, s) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + s * 0.3);
+    ctx.bezierCurveTo(cx, cy, cx - s, cy, cx - s, cy + s * 0.4);
+    ctx.bezierCurveTo(cx - s, cy + s * 0.8, cx, cy + s * 1.2, cx, cy + s * 1.4);
+    ctx.bezierCurveTo(cx, cy + s * 1.2, cx + s, cy + s * 0.8, cx + s, cy + s * 0.4);
+    ctx.bezierCurveTo(cx + s, cy, cx, cy, cx, cy + s * 0.3);
+    ctx.closePath();
+  }
+
+  function handleTap(clientX, clientY) {
+    if (!running) return;
+    const rect = canvasEl.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    if (Math.hypot(x - target.x, y - target.y) < target.size * 1.3) {
+      score++;
+      target.hit = true;
+      target.hitT = 0;
+      const scoreEl = document.getElementById('cupidScore');
+      if (scoreEl) scoreEl.textContent = score;
+      if (score >= GOAL) {
+        running = false;
+        markGameComplete(5);
+        showToast('🎯 Cupid never misses!');
+      } else {
+        pickNewTarget();
+      }
+    }
+  }
+
+  function onClick(e) { handleTap(e.clientX, e.clientY); }
+  function onTouch(e) {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    handleTap(t.clientX, t.clientY);
+  }
+  canvasEl.addEventListener('click', onClick);
+  canvasEl.addEventListener('touchstart', onTouch, { passive: false });
+
+  function loop(ts) {
+    if (!lastTime) lastTime = ts;
+    lastTime = ts;
+
+    target.x += (target.tx - target.x) * 0.06;
+    target.y += (target.ty - target.y) * 0.06;
+    target.moveTimer++;
+    if (target.moveTimer > 90) { pickNewTarget(); target.moveTimer = 0; }
+
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.save();
+    if (target.hit) {
+      target.hitT++;
+      const flash = Math.max(0, 1 - target.hitT / 12);
+      ctx.fillStyle = `rgba(255,255,255,${flash})`;
+      const s = target.size * (1.3 + target.hitT * 0.06);
+      drawHeartShape(target.x, target.y - s * 0.6, s);
+      ctx.fill();
+      if (target.hitT > 12) target.hit = false;
+    }
+    ctx.fillStyle = '#ff5fa2';
+    ctx.shadowColor = 'rgba(255,95,162,.7)';
+    ctx.shadowBlur = 12;
+    drawHeartShape(target.x, target.y - target.size * 0.6, target.size);
+    ctx.fill();
+    ctx.restore();
+
+    if (running) gameLoops[5] = requestAnimationFrame(loop);
+  }
+  gameLoops[5] = requestAnimationFrame(loop);
+
+  gameCleanup[5] = () => {
+    running = false;
+    canvasEl.removeEventListener('click', onClick);
+    canvasEl.removeEventListener('touchstart', onTouch);
+  };
+}
+
+/* ------ GAME 6: Lucky Birthday Wheel ------
+   CSS-rotated wheel with 5 good + 5 bad outcomes (10 segments), for a
+   realistic spin where the result genuinely isn't guaranteed to be a
+   "win" segment. The cubic-bezier transition on .wheel-disc gives a
+   natural fast-start/slow-finish ease. Only 3 spins are allowed total.
+   Landing a GOOD reward within those 3 spins = SUCCESS (completes the
+   game). Using all 3 spins with only bad outcomes = FAIL — a
+   "Try Again" button restarts the wheel with 3 fresh spins. */
+function initLuckyWheel() {
+  const wheel = document.getElementById('birthdayWheel');
+  const spinBtn = document.getElementById('spinWheelBtn');
+  const resultEl = document.getElementById('wheelResult');
+  const triesEl = document.getElementById('wheelTries');
+  const tryAgainBtn = document.getElementById('wheelTryAgainBtn');
+
+  const MAX_SPINS = 3;
+  let spinsUsed = 0;
+  let over = false;
+
+  const rewards = [
+    { emoji: '🎂', text: 'Extra Cake! A second slice just for you.',        good: true  },
+    { emoji: '😅', text: 'Try Again — the wheel got shy this time.',        good: false },
+    { emoji: '🌹', text: 'Magic Rose! Beauty that never fades.',            good: true  },
+    { emoji: '🙈', text: 'No Gift — better luck on the next spin!',         good: false },
+    { emoji: '💖', text: 'Heart Gem! A piece of pure sibling love.',           good: true  },
+    { emoji: '💨', text: 'Empty Box — nothing but a giggle this time.',     good: false },
+    { emoji: '🎁', text: 'Surprise Gift! Something wonderful awaits.',      good: true  },
+    { emoji: '🎭', text: 'Better Luck Next Time — the wheel is playful!',   good: false },
+    { emoji: '⭐', text: 'Golden Star! You shine bright today.',            good: true  },
+    { emoji: '🍂', text: 'Lost Turn — the wheel needs a moment to think.',  good: false }
+  ];
+  const segCount = rewards.length;
+  const segAngle = 360 / segCount;
+  const segColors = rewards.map((r, i) =>
+    r.good
+      ? (i % 2 === 0 ? '#5c1145' : '#7a1860')
+      : (i % 2 === 0 ? '#241430' : '#341a45')
+  );
+
+  wheel.innerHTML = '';
+  const conic = rewards.map((r, i) => `${segColors[i]} ${i * segAngle}deg ${(i + 1) * segAngle}deg`).join(', ');
+  wheel.style.background = `conic-gradient(${conic})`;
+
+  rewards.forEach((r, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'wheel-seg';
+    seg.style.transform = `rotate(${i * segAngle + segAngle / 2}deg)`;
+    seg.innerHTML = `<span>${r.emoji}</span>`;
+    wheel.appendChild(seg);
+  });
+
+  const hub = document.createElement('div');
+  hub.className = 'wheel-hub';
+  wheel.appendChild(hub);
+
+  wheel.style.transition = 'none';
+  wheel.style.transform = 'rotate(0deg)';
+  // Force reflow so the next transform change re-enables the transition.
+  void wheel.offsetWidth;
+  wheel.style.transition = '';
+
+  resultEl.textContent = '';
+  resultEl.className = 'wheel-result';
+  spinBtn.disabled = false;
+  spinBtn.textContent = 'Spin Wheel ✨';
+  if (triesEl) triesEl.textContent = String(MAX_SPINS);
+  if (tryAgainBtn) tryAgainBtn.classList.remove('visible');
+
+  let spinning = false;
+  let currentRotation = 0;
+
+  function endGame(won) {
+    over = true;
+    spinBtn.disabled = true;
+    if (!won && tryAgainBtn) tryAgainBtn.classList.add('visible');
+  }
+
+  function onSpin() {
+    if (spinning || over) return;
+    spinning = true;
+    spinBtn.disabled = true;
+    resultEl.textContent = '';
+    resultEl.className = 'wheel-result';
+
+    const winIndex = Math.floor(Math.random() * segCount);
+    // Land the pointer (fixed at top, 12 o'clock) on the middle of winIndex segment.
+    const targetAngle = 360 - (winIndex * segAngle + segAngle / 2);
+    const fullSpins = (5 + Math.floor(Math.random() * 2)) * 360; // 5-6 full spins, feels less mechanical
+    currentRotation += fullSpins + targetAngle - (currentRotation % 360);
+
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+    const t = setTimeout(() => {
+      const r = rewards[winIndex];
+      spinsUsed++;
+      if (triesEl) triesEl.textContent = String(Math.max(0, MAX_SPINS - spinsUsed));
+
+      resultEl.innerHTML = `<strong style="color:var(--primary);font-size:1.3rem">${r.emoji}</strong><br>${r.text}`;
+      resultEl.className = 'wheel-result ' + (r.good ? 'win' : 'lose');
+      showToast('🎡 ' + r.text);
+
+      if (r.good) {
+        launchConfetti(40);
+        markGameComplete(6);
+        endGame(true);
+        spinBtn.textContent = 'Spin Again 🔄';
+      } else if (spinsUsed >= MAX_SPINS) {
+        endGame(false);
+      } else {
+        spinBtn.disabled = false;
+        spinBtn.textContent = 'Spin Wheel ✨';
+      }
+      spinning = false;
+    }, 4100);
+    cleanupTimeouts.push(t);
+  }
+
+  const cleanupTimeouts = [];
+  spinBtn.addEventListener('click', onSpin);
+
+  function onTryAgain() { initGame(6); }
+  if (tryAgainBtn) tryAgainBtn.addEventListener('click', onTryAgain);
+
+  gameCleanup[6] = () => {
+    spinBtn.removeEventListener('click', onSpin);
+    cleanupTimeouts.forEach(clearTimeout);
+    if (tryAgainBtn) tryAgainBtn.removeEventListener('click', onTryAgain);
+  };
+}
+
+/* ------ GAME 7: Butterfly Rescue (optional mini game) ------
+   A grid of shimmering bubbles — only some trap a butterfly, the rest
+   are empty. Tap a bubble to pop it; butterflies flutter free, empty
+   bubbles just pop with a puff. Max 15 taps allowed. Rescuing 10
+   butterflies = SUCCESS. Using all 15 taps without reaching 10 = FAIL
+   (a "Try Again" button restarts the game with a fresh layout). */
+function initButterflyRescue() {
+  const grid = document.getElementById('rescueGrid');
+  grid.innerHTML = '';
+  const messageEl = document.getElementById('rescueMessage');
+  const tryAgainBtn = document.getElementById('rescueTryAgainBtn');
+  if (messageEl) { messageEl.textContent = ''; messageEl.className = 'hunt-message'; }
+  if (tryAgainBtn) tryAgainBtn.classList.remove('visible');
+
+  const GOAL = 10;
+  const TOTAL_BUBBLES = 20;   // more bubbles than butterflies — some stay empty
+  const MAX_TAPS = 15;
+
+  // Randomly choose which bubbles actually contain a butterfly.
+  let butterflyPositions = new Set();
+  while (butterflyPositions.size < GOAL) {
+    butterflyPositions.add(Math.floor(Math.random() * TOTAL_BUBBLES));
+  }
+
+  let rescued = 0, taps = 0, over = false;
+  const cells = [];
+  const clickHandlers = [];
+  const timeouts = [];
+
+  const scoreEl0 = document.getElementById('rescueScore');
+  if (scoreEl0) scoreEl0.textContent = '0';
+  const tapsEl0 = document.getElementById('rescueTries');
+  if (tapsEl0) tapsEl0.textContent = String(MAX_TAPS);
+
+  const cellPx = Math.min(56, Math.floor((window.innerWidth * 0.8 - 48) / 5));
+  grid.style.gridTemplateColumns = `repeat(5, ${cellPx}px)`;
+
+  function endGame(won) {
+    over = true;
+    if (messageEl) {
+      messageEl.textContent = won
+        ? '🎉 All butterflies rescued!'
+        : '💔 Out of taps — try again!';
+      messageEl.className = 'hunt-message ' + (won ? 'win' : 'lose');
+    }
+    if (won) {
+      markGameComplete(7);
+      showToast('🐰 All butterflies rescued!');
+    } else {
+      showToast('💨 Out of taps!');
+      if (tryAgainBtn) tryAgainBtn.classList.add('visible');
+    }
+  }
+
+  for (let i = 0; i < TOTAL_BUBBLES; i++) {
+    const el = document.createElement('div');
+    el.className = 'rescue-bubble';
+    el.style.width = cellPx + 'px';
+    el.style.height = cellPx + 'px';
+    el.textContent = '🫧';
+    el.style.animationDelay = (Math.random() * 2) + 's';
+
+    const hasButterfly = butterflyPositions.has(i);
+
+    const handler = () => {
+      if (over || el.classList.contains('popped')) return;
+      el.classList.add('popped');
+      taps++;
+      const tapsEl = document.getElementById('rescueTries');
+      if (tapsEl) tapsEl.textContent = String(Math.max(0, MAX_TAPS - taps));
+
+      if (hasButterfly) {
+        el.textContent = '🦋';
+        rescued++;
+        const scoreEl = document.getElementById('rescueScore');
+        if (scoreEl) scoreEl.textContent = rescued;
+        const t = setTimeout(() => { el.classList.add('flutter-away'); }, 300);
+        timeouts.push(t);
+      } else {
+        el.textContent = '💨';
+        el.classList.add('empty-pop');
+      }
+
+      if (!over && rescued >= GOAL) { endGame(true); return; }
+      if (!over && taps >= MAX_TAPS && rescued < GOAL) { endGame(false); }
+    };
+
+    el.addEventListener('click', handler);
+    clickHandlers.push({ el, handler });
+    cells.push(el);
+    grid.appendChild(el);
+  }
+
+  function onTryAgain() { initGame(7); }
+  if (tryAgainBtn) tryAgainBtn.addEventListener('click', onTryAgain);
+
+  gameCleanup[7] = () => {
+    timeouts.forEach(clearTimeout);
+    clickHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+    if (tryAgainBtn) tryAgainBtn.removeEventListener('click', onTryAgain);
+  };
+}
+
+/* ============================================================
+   SCENE 12: SECRET ROOM
+   ============================================================ */
+function buildSecretRoom() {
+  const scene = getScene('scene-secret');
+  // Add fireflies
+  for (let i = 0; i < 20; i++) {
+    const ff = document.createElement('div');
+    ff.className='firefly';
+    ff.style.left = Math.random()*100+'%';
+    ff.style.top  = Math.random()*100+'%';
+    ff.style.setProperty('--fx', (Math.random()-0.5)*200+'px');
+    ff.style.setProperty('--fy', (Math.random()-0.5)*200+'px');
+    ff.style.setProperty('--fx2', (Math.random()-0.5)*300+'px');
+    ff.style.setProperty('--fy2', (Math.random()-0.5)*300+'px');
+    ff.style.animationDuration = (4 + Math.random()*6)+'s';
+    ff.style.animationDelay = Math.random()*5+'s';
+    scene.appendChild(ff);
+  }
+  // Petals
+  const petalEmojis = ['🌸','🌺','🌼'];
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className='petal';
+    p.textContent=petalEmojis[i%3];
+    p.style.left = Math.random()*100+'%';
+    p.style.setProperty('--pdx', (Math.random()-0.5)*100+'px');
+    p.style.animationDuration = (5+Math.random()*8)+'s';
+    p.style.animationDelay = Math.random()*6+'s';
+    scene.appendChild(p);
+  }
+}
+
+document.getElementById('toGardenBtn').addEventListener('click', () => {
+  goTo('scene-garden');
+  buildGarden();
+});
+
+/* ============================================================
+   SCENE 13: DREAM GARDEN
+   ============================================================ */
+function buildGarden() {
+  const scene = document.getElementById('gardenScene');
+  scene.innerHTML = '';
+
+  // Glowing tree
+  const tree = document.createElement('div');
+  tree.className='glowing-tree';
+  tree.textContent='🌳';
+  tree.style.left='50%'; tree.style.transform='translateX(-50%)';
+  scene.appendChild(tree);
+
+  // Lanterns
+  ['15%','80%','5%','90%'].forEach((x,i) => {
+    const l = document.createElement('div');
+    l.className='lantern';
+    l.textContent='🏮';
+    l.style.left=x; l.style.top=(10+i*12)+'%';
+    l.style.animationDelay=(i*.5)+'s';
+    scene.appendChild(l);
+  });
+
+  // Flowers
+  const flowers = ['🌸','🌺','🌻','🌼','🌷'];
+  for (let i = 0; i < 12; i++) {
+    const f = document.createElement('div');
+    f.style.cssText=`position:absolute;bottom:${5+Math.random()*20}%;left:${Math.random()*90}%;font-size:${1+Math.random()*1}rem;animation:fl-flicker ${1+Math.random()*2}s ease-in-out infinite;`;
+    f.textContent=flowers[i%flowers.length];
+    scene.appendChild(f);
+  }
+
+  // Pond
+  const pond = document.createElement('div');
+  pond.className='pond';
+  scene.appendChild(pond);
+
+  // Fireflies in garden
+  for (let i = 0; i < 15; i++) {
+    const ff = document.createElement('div');
+    ff.className='firefly';
+    ff.style.left=Math.random()*100+'%';
+    ff.style.top=Math.random()*100+'%';
+    ff.style.setProperty('--fx',(Math.random()-0.5)*150+'px');
+    ff.style.setProperty('--fy',(Math.random()-0.5)*150+'px');
+    ff.style.setProperty('--fx2',(Math.random()-0.5)*200+'px');
+    ff.style.setProperty('--fy2',(Math.random()-0.5)*200+'px');
+    ff.style.animationDuration=(3+Math.random()*5)+'s';
+    ff.style.animationDelay=Math.random()*4+'s';
+    scene.appendChild(ff);
+  }
+}
+
+document.getElementById('toFinaleBtn').addEventListener('click', () => {
+  goTo('scene-finale');
+  startFinale();
+});
+
+/* ============================================================
+   SCENE 14: GRAND FINALE
+   ============================================================ */
+function startFinale() {
+  const canvas = document.getElementById('fireworkCanvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  let particles2 = [];
+
+  function explode(x, y) {
+    const colors = ['#ff5fa2','#ffd6ea','#fff3f8','#ff85b8','#ffcc00','#a855f7','#60cdff'];
+    for (let i = 0; i < 50; i++) {
+      const angle = (i/50)*Math.PI*2;
+      const speed = 1 + Math.random()*4;
+      particles2.push({
+        x, y,
+        vx: Math.cos(angle)*speed,
+        vy: Math.sin(angle)*speed,
+        life: 1,
+        decay: .015 + Math.random()*.015,
+        size: 2 + Math.random()*3,
+        color: colors[Math.floor(Math.random()*colors.length)]
+      });
+    }
+  }
+
+  let fw_interval = setInterval(() => {
+    explode(
+      W*.1 + Math.random()*W*.8,
+      H*.1 + Math.random()*H*.5
+    );
+  }, 600);
+  explode(W/2, H*.3);
+
+  function loop() {
+    ctx.fillStyle='rgba(18,0,13,.15)';
+    ctx.fillRect(0,0,W,H);
+    particles2 = particles2.filter(p => {
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.05; p.life-=p.decay;
+      ctx.save();
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      return p.life > 0;
+    });
+    gameLoops['finale'] = requestAnimationFrame(loop);
+  }
+  gameLoops['finale'] = requestAnimationFrame(loop);
+  launchConfetti(80);
+
+  // Auto-stop fireworks after 15 seconds
+  setTimeout(() => clearInterval(fw_interval), 15000);
+}
+
+document.getElementById('toEndingBtn').addEventListener('click', () => {
+  stopGame('finale');
+  goTo('scene-ending');
+  typeEnding();
+});
+
+/* ============================================================
+   SCENE 15: ENDING
+   ============================================================ */
+function typeEnding() {
+  const msg = document.getElementById('endingMsg');
+  const text = "Happy Birthday, didi.\nThanks for always having my back —\nmay your smile always shine\nbrighter than the stars.";
+  msg.textContent = '';
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      msg.textContent += text[i] === '\n' ? '\n' : text[i];
+      i++;
+    } else {
+      clearInterval(interval);
+      launchConfetti(50);
+    }
+  }, 55);
+}
+
+/* ============================================================
+   DIRECT SCENE LINKS (for rooms without game dependency)
+   ============================================================ */
+// scene-room next button (may not have games completed)
+// Allow direct navigation from gallery to portal even if games not done
+// Games → secret path handled by reward system
+
+// If user hasn't played games, allow skipping via a subtle link
+// (or they must play - design choice: keep it required for immersion)
+</script>
+</body>
+</html>
