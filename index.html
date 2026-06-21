@@ -3338,7 +3338,7 @@ function initMemoryMatch() {
   if (messageEl) { messageEl.textContent = ''; messageEl.className = 'hunt-message'; }
   if (tryAgainBtn) tryAgainBtn.classList.remove('visible');
 
-  const MAX_TRIES = 20;
+  const MAX_TRIES = 15;
   const emojis = ['🌸','💖','🌹','✨','🦋','🌙','⭐','🎀'];
   let cards = [...emojis, ...emojis]
     .sort(() => Math.random() - 0.5)
